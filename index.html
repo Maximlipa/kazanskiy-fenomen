@@ -346,7 +346,7 @@ y_help:{nick:'Сталик',fx:{hp:-30,avt:-15},f:['jeans_lost','cried'],t:`— 
 
 За крик тебя бьют вдвое сильнее. Джинсы всё равно забирают. А когда узнают, что ты из Волгограда, дают кличку — Сталик. Сталинград, который звал на помощь.`,c:[{t:'Домой.',go:'home1'}]},
 
-y_run_ok:{fx:{avt:-10},f:['coward'],t:`Ты срываешься с места. Ноги у тебя всегда были быстрые. Сзади топот и свист, но ты ныряешь в подъезд, взлетаешь на четвёртый и захлопываешь дверь.
+y_run_ok:{fx:{avt:-10},f:['coward','escaped'],t:`Ты срываешься с места. Ноги у тебя всегда были быстрые. Сзади топот и свист, но ты ныряешь в подъезд, взлетаешь на четвёртый и захлопываешь дверь.
 
 Ты цел.
 
@@ -356,14 +356,23 @@ y_run_no:{fx:{hp:-35,avt:-10},f:['coward'],t:`Ты срываешься с ме�
 
 — Бегун, — сплёвывает Шама. — Ну беги, беги. Мы тебя везде найдём.`,c:[{t:'Доползти до дома.',go:'home1'}]},
 
-home1:{d:'Вечер того же дня',t:s=>`${s.hp<80?'Мама открывает дверь и роняет полотенце. Лицо у тебя разбито, под глазом наливается синяк, губа треснула.':'Мама открывает дверь и всё понимает по твоим глазам.'}${s.f.jeans_lost?' Ты стоишь в чужих трениках.':''}
+home1:{d:'Вечер того же дня',t:s=>s.f.escaped?`Ты влетаешь в квартиру и прислоняешься спиной к двери. Сердце колотится где-то в горле.
+
+Мама выглядывает из кухни:
+— Лёша? Ты чего такой белый?
+
+Отец выходит из комнаты с молотком в руке — он вешал полку. Подходит к окну, долго смотрит во двор, на парней у гаражей. Потом на тебя.
+
+— Кто? — спрашивает он тихо.
+
+Танька выглядывает из-за его спины, испуганно хлопая глазами.`:`${s.hp<80?'Мама открывает дверь и роняет полотенце. Лицо у тебя разбито, под глазом наливается синяк, губа треснула.':'Мама открывает дверь и всё понимает по твоим глазам.'}${s.f.jeans_lost?' Ты стоишь в чужих трениках.':''}
 
 Отец выходит из комнаты с молотком в руке — он вешал полку. Смотрит на тебя долго.
 
 — Кто? — спрашивает он тихо.
 
 Танька выглядывает из-за его спины и начинает плакать.`,
-c:[{t:'Рассказать правду. Пусть разбираются взрослые.',go:'home_truth'},{t:'«— Упал. На лестнице.»',go:'home_lie'},{t:'«— Пап. Научи меня драться.»',go:'home_fight'}]},
+c:[{t:'Рассказать правду. Пусть разбираются взрослые.',go:'home_truth'},{t:'«— Упал. На лестнице.»',go:'home_lie',req:s=>!s.f.escaped},{t:'«— Никто. Просто бегал.»',go:'home_lie_run',req:s=>s.f.escaped},{t:'«— Пап. Научи меня драться.»',go:'home_fight'}]},
 
 home_truth:{fx:{sem:10,avt:-10},f:['mom_police'],t:`Отец надевает пиджак. Мама звонит участковому.
 
@@ -380,6 +389,12 @@ home_lie:{fx:{sem:-5,dusha:5},t:`— Упал, — повторяет отец. 
 — Я в твои годы тоже падал, — говорит он. — Знаешь, что понял? Упасть не стыдно. Стыдно не встать.
 
 Мама плачет на кухне. Танька приносит тебе свою последнюю конфету — «Мишку на Севере».`,c:[{t:'Дальше.',go:'night1'}]},
+
+home_lie_run:{fx:{sem:-5},t:`— Бегал, — повторяет отец. — Ну-ну.
+
+Он ещё раз смотрит в окно и ничего не говорит. Только поздно вечером ты слышишь, как он проверяет замок на входной двери. Дважды.
+
+Мама весь вечер молчит. Танька приносит тебе свою последнюю конфету — «Мишку на Севере».`,c:[{t:'Дальше.',go:'night1'}]},
 
 home_fight:{fx:{sem:10},f:['palych'],t:`Отец садится напротив.
 
@@ -471,7 +486,7 @@ c:[{t:'«— Давай я тебя провожу.»',go:'lena_walk',fx:{lena:1
 
 lena_walk:{f:['met_rustem'],fx:{lena:5},t:`Вы идёте через пустырь, мимо долгостроя. Лена рассказывает про брата.
 
-Рустем старше на пять лет. Был лучшим борцом района, служил в десанте. Вернулся — и его будто подменили. Теперь у него деньги, импортные сигареты и люди, которые слушаются с полуслова.
+Рустем старше на пять лет. Был лучшим борцом района, служил в десанте. Вернулся — и его будто подменили. Теперь у него деньги, импортный магнитофон и люди, которые слушаются с полуслова.
 
 — Он хороший, — говорит Лена. — Был. Он мне в детстве косы заплетал, когда мама на смене.
 
@@ -522,9 +537,9 @@ c:[{t:'«— Пошли.»',go:'hockey',fx:{sem:10,dusha:5},f:['tanya_walk'],r:'
 // ===== ГЛАВА 3 =====
 rematch:{chap:'Глава 3. Пришиться',d:'Ноябрь 1978. Первый снег',t:s=>`Выпадает первый снег. Ты возвращаешься домой ${s.f.box?'с тренировки':s.f.kach?'из подвала':s.f.gosha_friend?'от Гоши':'из магазина'}. У гаражей тебя ждут.
 
-Шама, Кабан, Мосол, Шкет. Шама курит, стряхивая пепел на снег.${s.f.hit_shama?'\n\n— Должок, Сталик. Помнишь?':''}${s.f.saved_gosha&&!s.f.trick?'\n\n— Ты на Мосла руку поднял, — говорит Шама. — За чушпана впрягся.':''}${s.f.trick?'\n\n— Мосол сказал, ты меня в посыльные записал, — говорит Шама. — Смешно.':''}${s.f.coward?'\n\n— О, бегун. Сегодня не убежишь.':''}
+Шама, Кабан, Мосол, Шкет. Шама лузгает семечки, сплёвывая шелуху на снег.${s.f.hit_shama?'\n\n— Должок, Сталик. Помнишь?':''}${s.f.saved_gosha&&!s.f.trick?'\n\n— Ты на Мосла руку поднял, — говорит Шама. — За чушпана впрягся.':''}${s.f.trick?'\n\n— Мосол сказал, ты меня в посыльные записал, — говорит Шама. — Смешно.':''}${s.f.coward?'\n\n— О, бегун. Сегодня не убежишь.':''}
 
-— Короче так. — Шама щелчком отправляет окурок в сугроб. — Ты или с нами, или под нами. Третьего тут нет.`,
+— Короче так. — Шама стряхивает шелуху с ладоней. — Ты или с нами, или под нами. Третьего тут нет.`,
 c:[{t:'«— Давай раз на раз. Ты и я. Без них.»',roll:{st:'sila',dc:14,ok:'rm_win',no:'rm_lose'},h:'драка'},
  {t:'Встать в стойку, как учил Палыч.',roll:{st:'sila',dc:11,ok:'rm_win',no:'rm_lose'},req:s=>s.f.box,h:'бокс'},
  {t:'Отдать все деньги.',go:'rm_pay',req:s=>s.rub>=2},
@@ -637,6 +652,8 @@ join_done:{fx:{dusha:-10},t:`Когда всё кончается, ты стои
 
 Рустем подходит, обнимает тебя за шею, прижимается лбом к твоему лбу:
 — Теперь ты наш, Сталик. Скорлупа. Самый низ. Но наш. Тебя в этом городе больше никто пальцем не тронет. Только мы.
+
+— И запомни понятия, — Рустем загибает пальцы. — Не куришь. Не пьёшь. Спорт — каждый день. Своих не сдаёшь. Чушпану руку не жмёшь. И пацаны не извиняются. Увижу с сигаретой — пеняй на себя.
 
 Пацаны смеются. Шама первым протягивает руку. Ты её пожимаешь.
 
@@ -840,7 +857,7 @@ g1:{fx:{hp:30},chap:'Глава 4. Скорлупа',d:'Декабрь 1978',t:s
 
 Но у скорлупы есть обязанности. Главная — сборы. Каждую пятницу рубль в общак. Шама собирает и не спрашивает, где ты взял.
 
-Рубль — это пять обедов. Или бутылка портвейна и пачка «Явы».`,
+Рубль — это пять обедов. Или три похода в кино с пломбиром.`,
 c:[{t:'Взять у родителей. Наврать, что на кружок.',go:'g2',fx:{sem:-10},r:'Мама даёт молча. Она не верит, но даёт.'},
  {t:'Трясти мелочь со школьников, как все.',go:'g2',fx:{dusha:-15,avt:5,rub:2},f:['shook'],r:'Это оказывается легко. Пугающе легко. Пятиклассник отдаёт тебе двадцать копеек и смотрит так, как ты когда-то смотрел на Шаму.'},
  {t:'Разгружать вагоны на товарной станции.',go:'g2',fx:{hp:-10,rub:3,sila:1},r:'Платят трёшку за ночь. Спина горит, руки в занозах, зато деньги твои. Шама ржёт: «Пролетарий!» — но рубль берёт.'}]},
@@ -1352,7 +1369,7 @@ s2_py_ok:{fx:{avt:10},f:['stop_war'],t:`Гвоздь долго молчит, п
 — Тяп-ляповские слов на ветер не бросали. Ладно. Мы первыми не пойдём. Но Заречные не успокоятся, Сталик. Ты это понимаешь?`,c:[{t:'Назад.',go:'s2_hub'}]},
 
 s2_py_no:{fx:{avt:-10},t:`Гвоздь смеётся:
-— Старая гвардия. Вы своё отбегали, дядя. Теперь наше время.
+— Старая гвардия. Вы своё отвоевали, дядя. Теперь наше время.
 
 Пацанята ржут.`,c:[{t:'Назад.',go:'s2_hub'}]},
 
@@ -1834,7 +1851,7 @@ const CH={
  m1:{n:'',kid:1,top:'#5a3a2a',hair:'#222'},m2:{n:'',kid:1,top:'#2a4a3a',hair:'#6a4a2a'},m3:{n:'',kid:1,top:'#4a2a4a',hair:'#333'},
  man:{n:'',top:'#5a5a4a',hat:'hat',coat:1,hair:'#444'}};
 const SN={arrive:['father','mother','tanya'],yard1:'G',y_honest:'G',y_give:'G',y_refuse:'G',y_hit_ok:'G',y_hit_no:'G',y_silent:['shama','mosol','kaban','shket','man'],y_jeans:'G',y_help:['shama','mosol','kaban','shket','man'],y_run_no:'G',
- street1:['shama','mosol','kaban','shket','babka'],street2:'G',y_dare:'G',home1:'F',home_truth:'F',home_lie:'F',home_fight:'F',night1:['tanya'],
+ street1:['shama','mosol','kaban','shket','babka'],street2:'G',y_dare:'G',home1:'F',home_truth:'F',home_lie:'F',home_lie_run:'F',home_fight:'F',night1:['tanya'],
  school1:['lena','gosha','mosol','raisa'],school_break:['mosol','shket','gosha'],gb_win:['mosol','gosha'],gb_lose:['mosol','gosha'],gb_trick:['gosha'],gb_trick_no:['mosol','shket','gosha'],gb_pass:['mosol','shket','gosha'],gb_join:['mosol','shket','gosha'],
  lena_talk:['lena'],lena_walk:['lena','rustem'],essay:['raisa','lena','gosha','mosol'],shket:['shket'],sec_box:['palych'],sec_kach:['bizon'],sec_chess:['gosha'],sec_none:['tanya'],
  hockey:['shama','mosol','shket','m1','m2','m3'],hockey_win:['shama','mosol','shket'],hockey_star:['shama','mosol','shket'],hockey_lose:['shama','mosol','shket'],
@@ -1870,15 +1887,78 @@ function paras(t){return t.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean)}
 function chunks(t){const out=[];paras(t).forEach(p=>{if(p.length<=230){out.push(p);return}const sents=p.match(/[^.!?…]+[.!?…»]+[»)]?\s*|[^.!?…]+$/g)||[p];let cur='';sents.forEach(x=>{if((cur+x).length>200&&cur){out.push(cur.trim());cur=''}cur+=x});if(cur.trim())out.push(cur.trim())});return out}
 function npcFor(id,st){let v=SN[id];if(typeof v==='function')v=v(st);if(v==='G')v=['shama','mosol','kaban','shket'];if(v==='F')v=['father','mother','tanya'];return v||[]}
 function charsFor(id,side,st){if(side){const k=Object.keys(SIDECH).find(k=>id.startsWith(k));return k?[SIDECH[k]]:[]}const l=npcFor(id,st);return Array.isArray(l)?l.slice(0,4):[]}
-function speaker(ch,chars,prev){if(ch.indexOf('—')<0)return null;if(/(говоришь ты|ты говоришь|шепчешь ты|орёшь ты|бормочешь ты|— говоришь|хрипишь ты|— ты )/.test(ch))return'hero';
- for(const[id,rx]of SPK)if(chars.includes(id)&&rx.test(ch))return id;for(const[id,rx]of SPK)if(rx.test(ch))return id;if(/^—/.test(ch)){if(prev&&prev!=='hero'&&chars.includes(prev))return prev;return chars[0]||null}return null}
-// реплика -> куски для озвучки: [голос, текст]
-function vsegs(ch,sp,st){const out=[];const who=sp||'narr';
- ch.split('\n').forEach(line=>{line=line.trim();if(!line)return;
-  if(line[0]==='—'){const parts=line.slice(1).split(/\s—\s/);parts.forEach((p,i)=>{p=p.trim().replace(/^[,.]\s*/,'');if(!p)return;out.push([i%2===0?who:'narr',p])})}
+const FEM=['lena','tanya','raisa','mother','zina','babka'];
+const HERO_RX=/(^|[\s,.])(говоришь|шепчешь|орёшь|бормочешь|хрипишь|кричишь|отвечаешь|повторяешь|спрашиваешь|выдыхаешь|бросаешь|цедишь|выдавливаешь|врёшь|отрезаешь)([\s,.]|$)|(^|[\s,.])ты (говоришь|шепчешь|отвечаешь|кричишь|повторяешь|спрашиваешь)/;
+const OVR=[
+['Сам по себе,','rustem'],
+['Чушпан с зубами.','man'],
+['Хватит,','sabirov'],
+['Это тебе. От Рустема.','hero'],
+['Значит, Рустем решил чужими руками.','kardan'],
+['Ты мне сейчас жизнь подарил','kardan'],
+['Айда-а-а!','kaban'],
+['Лёш. Ты не спишь?','tanya'],
+['Лёш, а они и меня побьют?','tanya'],
+['Сомов? Алексей? Капитан Сабиров','sabirov'],
+['Знаю, ты к тяп-ляповским не пошёл','sabirov'],
+['Шапку сымай, чушпан.','m1'],
+['Ребята, это Алексей Сомов','raisa'],
+['Найдём, поговорим','man'],
+['Лен, кто такой?','rustem'],
+['Одноклассник. Лёша. Из Волгограда.','lena'],
+['Город-герой.','rustem'],
+['Чушпан с сестрой Рустема танцует','shama'],
+['Ты обещал меня защищать','tanya'],
+['Растёшь,','mosol'],
+['Пап, в эту субботу','hero'],
+['Почему?','father'],
+['Пап, не надо. Пожалуйста','hero'],
+['Сталик!','man'],
+['Этих не трогать.','rustem'],
+['Носи, Сталик.','shama'],
+['Защищал. С палкой в руках','sabirov'],
+['Беги. Сейчас,','hero'],
+['Помнишь гаражи, Рустем?','hero'],
+['Защитник,','mosol'],
+['Шама. Подумай головой','hero'],
+['Праздник сегодня. Мамки','hero'],
+['Слышал. Головастый.','rustem'],
+['Хорош,','rustem'],
+['А со мной он и правда знаком,','rustem'],
+['Ты хотя бы пошёл,','tanya'],
+['Сбегай за хлебом','mother']];
+function okey(t){return t.replace(/[«»"]/g,'').replace(/\s+/g,' ').trim().slice(0,40)}
+function lastName(t){let best=null,bi=-1;for(const[id,rx]of SPK){const g=new RegExp(rx.source,'g');let m;while((m=g.exec(t))){if(m.index>bi){bi=m.index;best=id}}}return best}
+function nameIn(t){let best=null,bi=1e9;for(const[id,rx]of SPK){const m=t.match(rx);if(m&&m.index<bi){bi=m.index;best=id}}return best}
+const VRB=/(ет|ит|ят|ат|ут|ют|ется|ится|ётся|ются|ятся|ёт|ешь|ишь|ал|ла|ил|ила|ул|ула|ял|яла)$/;
+function isNar(p,prev){const ws=p.split(/[\s,.!?]+/).filter(Boolean).slice(0,2);const w=ws[0]||'';const n=nameIn(p);const nameFirst=n&&p.search(SPK.find(x=>x[0]===n)[1])===0;
+ if(/[,!?…]$/.test(prev)){if(/^[а-яё]/.test(w)&&(ws.some(x=>VRB.test(x))||/^(одними|кто-то|он|она)$/.test(w)))return true;if(nameFirst||/^(Он|Она)$/.test(w))return true}
+ if(/[.!?…]$/.test(prev)&&/^[А-ЯЁ]/.test(w)){if(nameFirst)return true;if(/^(Он|Она)$/.test(w)||/(^|\s)(у него|у неё|его|её)(\s|$|[,.])/.test(p.split(/[.!?]/)[0]))return true}
+ return false}
+function dParts(line){const raw=line.slice(1).split(/\s—\s/);const out=[];
+ raw.forEach((p,i)=>{p=p.trim();if(i===0){out.push([true,p]);return}const prev=out[out.length-1];
+  if(prev[0]){if(isNar(p,prev[1]))out.push([false,p]);else prev[1]+=' — '+p}
+  else{if(/[,.!?…»]$/.test(prev[1]))out.push([true,p]);else prev[1]+=' — '+p}});return out}
+// говорящие по строкам для всех кусков сцены
+function attrib(chs,chars){const ctx={lastM:null,lastF:null,other:null,intro:null};const res=[];
+ chs.forEach(c=>{const out=[];ctx.subj=null;if(c[0]==='§'){res.push(out);return}let run=null;
+  c.split('\n').map(x=>x.trim()).filter(Boolean).forEach(line=>{
+   if(line[0]!=='—'){const n=nameIn(line);if(n&&n!=='hero'){if(FEM.includes(n))ctx.lastF=n;else ctx.lastM=n}
+    ctx.subj=lastName(line)||(/^(Он|Она)\s/.test(line)?(/^Она/.test(line)?ctx.lastF:ctx.lastM):null);ctx.intro=null;if(/:\s*$/.test(line)){if(/(^|\s)(ты|тебе|тебя|твой|твоя)\s/i.test(line)&&!n&&!/(^|\s)(он|она)\s/i.test(line))ctx.intro='hero';else ctx.intro=n||(/(^|\s)[Оо]на\s/.test(line)?ctx.lastF:/(^|\s)[Оо]н\s/.test(line)?ctx.lastM:null)}
+    run=null;out.push(null);return}
+   const p=dParts(line);const nar=p.filter(x=>!x[0]).map(x=>x[1]).join(' ');const k0=okey(p[0][1]);let sp=(OVR.find(o=>{const K=okey(o[0]);return k0===K||(K.length>=14&&k0.startsWith(K))})||[])[1];
+   if(!sp){if(HERO_RX.test(nar))sp='hero';else{const n=nameIn(nar);if(n)sp=n;else if(/(^|\s)она(\s|$|[,.])/i.test(nar))sp=ctx.lastF||chars.find(x=>FEM.includes(x))||null;else if(/(^|\s)он(\s|$|[,.])/i.test(nar))sp=ctx.lastM||ctx.other||chars[0]||null;else if(ctx.intro)sp=ctx.intro;else if(run)sp=run==='hero'?(ctx.other||chars[0]||null):'hero';else sp=ctx.subj||ctx.other||chars[0]||ctx.lastM||ctx.lastF||null}}
+   if(sp&&sp!=='hero'){ctx.other=sp;if(FEM.includes(sp))ctx.lastF=sp;else ctx.lastM=sp}
+   ctx.intro=null;ctx.subj=null;run=sp;out.push(sp)});
+  res.push(out)});return res}
+function mainSp(ls){return(ls||[]).find(x=>x)||null}
+// реплика -> куски для озвучки: [голос, текст]; ls — говорящие по строкам
+function vsegs(ch,ls,st){const out=[];let li=0;
+ ch.split('\n').forEach(line=>{line=line.trim();if(!line)return;const who=(Array.isArray(ls)?ls[li]:ls)||'narr';li++;
+  if(line[0]==='—'){dParts(line).forEach(([isS,p])=>{p=p.trim().replace(/^[,.]\s*/,'');if(!p)return;out.push([isS?who:'narr',p])})}
   else out.push(['narr',line])});
  return out.map(([v,t])=>[v==='hero'&&st&&st.stage===2?'hero2':v,t.replace(/[«»]/g,'').trim()]).filter(x=>x[1].replace(/[\s.…!?,—-]/g,'').length>0)}
-function vhash(v,t){let h=2166136261;const str=t;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(16).padStart(8,'0')}
+function vhash(v,t){let h=2166136261;const str=v==='narr'?t:v+'|'+t;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(16).padStart(8,'0')}
 // ===== РИСОВАННЫЕ ФОНЫ, ПЕРСОНАЖИ, КАРТА =====
 const SKY=[['#8fbfe2','#f7d7b0'],['#5f9fd8','#cfe6f5'],['#2b2858','#f08a4b'],['#070b22','#243058']];
 function R_(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -2183,7 +2263,7 @@ function sceneChars(){return charsFor(curId(),s.side,s)}
 function crowdOf(){const v=SN[curId()];return v==='C'||v==='C2'}
 let SCN=null;
 function sceneData(){const id=curId(),sc=S[id];const key=id+'|'+s.res;if(SCN&&SCN.key===key)return SCN;const ch=chunks(V(sc.t)||'');if(s.res)ch.unshift('§'+s.res);
- const chars=charsFor(id,s.side,s);let prev=null;const spk=ch.map(c=>{const sp=c[0]==='§'?null:speaker(c,chars,prev);if(sp)prev=sp;return sp});SCN={key,ch,spk,chars};return SCN}
+ const chars=charsFor(id,s.side,s);const ls=attrib(ch,chars);const spk=ls.map(mainSp);SCN={key,ch,spk,ls,chars};return SCN}
 // ---------- рисование ----------
 const CV={c:null,g:null,cache:{},tt:0,shake:0};
 function tod(){const d=s.dt||'';if(s.mode==='scene'&&!s.side){if(/Ночь|ночь|23:|Первая ночь|Выпускной/.test(d))return 3;if(/Вечер|вечер|18:|19:/.test(d))return 2}return[0,1,2,3][s.slot]}
@@ -2201,7 +2281,7 @@ function draw(){const c=CV.c,g=CV.g;const dpr=Math.min(2,window.devicePixelRatio
  if(crowdOf()){const R=R_(9);crowd(g,W,H,H*.98,16,R,['#0e0b09','#1a1410'])}
  const D=sceneData();const sp=D.spk[Math.min(s.ci,D.ch.length-1)];const n=D.chars.length;const pos=[[.5],[.3,.7],[.2,.5,.8],[.13,.37,.63,.87]][n-1]||[];
  const ph=Math.min(H*.8,Math.max(W*(n>2?.42:.55),H*.5));D.chars.forEach((id,i)=>{const d=vdef(id,s.stage,season());const act=!sp||sp===id||sp==='hero';const x=W*pos[i],by=H*1.02+(act&&sp===id?0:H*.02);const breath=Math.sin(t*1.6+i)*H*.003;
-  g.save();if(sp&&sp!==id){g.globalAlpha=.55;g.filter='brightness(.6)'}person(g,x,by+breath,ph*(sp===id?1.03:1),d,false,i<n/2&&n>1);g.restore()})}
+  g.save();if(sp&&sp!==id){g.filter='brightness(.78)'}person(g,x,by+breath,ph*(sp===id?1.03:1),d,false,i<n/2&&n>1);g.restore()})}
 function loop(){try{draw()}catch(e){console.error(e)}requestAnimationFrame(loop)}
 // ---------- интерфейс ----------
 function renderHUD(){let h='';HUDS.forEach(([k,ic,n])=>{if(k==='lena'&&!s.f.lena_met)return;const v=s[k];const warn=(k==='hp'&&v<35)||(k==='menty'&&v>=60)||(k==='dusha'&&v<25);
@@ -2213,7 +2293,7 @@ function render(){renderHUD();document.body.dataset.mode=s.mode;
 function renderScene(){const id=curId(),sc=S[id];const D=sceneData();const i=Math.min(s.ci,D.ch.length-1);let c=D.ch[i];const res=c[0]==='§';if(res)c=c.slice(1);
  const sp=D.spk[i];$('loc').innerHTML=`${sc.chap?'<b>'+esc(sc.chap)+'</b>':''}${sc.d?esc(V(sc.d)):''}`;if(sc.chap)s.chap=sc.chap;
  const nm=sp==='hero'?(s.nick||'Ты'):sp?((CH[sp]&&CH[sp].n)||''):'';$('nm').textContent=nm;$('nm').style.display=nm?'inline-block':'none';
- $('box').className=(sp?'say':'narr')+(res?' res':'');typeText(c);auPlay(c,sp);
+ $('box').className=(sp?'say':'narr')+(res?' res':'');typeText(c);auPlay(c,D.ls[i]);
  const last=i>=D.ch.length-1;let h='';$('endc').innerHTML='';
  if(last&&sc.end){const e=sc.end;const ttl=V(e.title);if(e.kind!=='stage')addEnd(e.id);
   $('endc').innerHTML=`<div class="end ${e.kind==='good'?'good':e.kind==='stage'?'stage':''}"><div class="k">${e.kind==='death'?'Смерть':e.kind==='stage'?'Итог этапа':'Концовка'}</div><h2>${esc(ttl)}</h2></div>`;
