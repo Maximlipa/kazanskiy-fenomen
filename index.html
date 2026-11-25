@@ -182,6 +182,24 @@ html,body{height:100%;overflow:hidden;background:#000}
 body[data-mode=map] #box,body[data-mode=map] #chs,body[data-mode=map] #loc{display:none}
 @media(max-width:640px){#hud{max-width:calc(100% - 150px)}.hs{font-size:11px;padding:2px 5px}#clock b{font-size:11px}#goal{top:auto;bottom:10px}#goal .go{position:static;transform:none;margin-top:8px;width:100%}
  .pin .ic{width:42px;height:42px;font-size:20px}.pin .lb{font-size:10px}#box{bottom:8px;padding:16px 14px 18px}#chs{bottom:auto;top:90px;max-height:calc(100% - 290px)}#loc{top:auto;bottom:auto;display:none}#toast{bottom:auto;top:84px}}
+
+.trow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.trow .btn{min-width:150px}
+.btn.tg{display:inline-block;text-decoration:none;color:#9fd0ff;border-color:#2f5d86;margin-top:6px}
+.btn.on{color:var(--ink);border-color:var(--gold)}
+.mdesc{color:var(--dim);line-height:1.5;font-size:14px;margin:8px 0 12px}.mdesc a{color:var(--gold)}
+.sets{display:flex;flex-direction:column;gap:12px}.srow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.srow input[type=range]{width:180px;accent-color:#b8312f}.seg{display:flex;gap:4px;flex-wrap:wrap}.seg .btn{padding:6px 9px}
+.spl li{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.spl li small{color:var(--dim);flex:1}.spl li.main b{color:var(--gold)}.spl a.btn{text-decoration:none}
+.tabs{display:flex;gap:6px;margin-bottom:6px}.af{display:flex;flex-direction:column;gap:10px}.af label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--dim);font-family:"Courier New",monospace}
+.af input{background:#0f0c09;border:1px solid var(--line);color:var(--ink);padding:10px;font-size:16px;border-radius:2px}.aerr{min-height:18px;color:#e0a15a;font-size:13px;line-height:1.4}
+.acc .an{font-size:20px;color:var(--ink)}.acc small{color:var(--dim)}
+.sitem{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);padding:12px;margin:10px 0 14px;background:#0f0c09}.sic{font-size:34px}.sitem p{color:var(--dim);font-size:14px;line-height:1.4;margin:4px 0}.spr{color:var(--gold);font-family:"Courier New",monospace}
+a.btn.big{text-decoration:none;text-align:center}.steps{padding-left:18px;line-height:1.5;font-size:14px;margin-bottom:12px}.steps li{list-style:decimal;border:none;padding:4px 0}
+.code{display:inline-block;margin-top:6px;padding:8px 12px;border:1px dashed var(--gold);font-family:"Courier New",monospace;font-size:20px;color:var(--gold);cursor:pointer}.code small{font-size:11px;color:var(--dim)}
+.ch small{display:block;opacity:.7}
+.sbuy{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.sitem .btn{margin-top:6px}
+.chl li{display:flex;justify-content:space-between;align-items:center;gap:8px}.chl li.no{color:#5d5244}
+.alb h4{color:var(--gold);font-family:"Courier New",monospace;margin:14px 0 4px;letter-spacing:.05em}.alb p{line-height:1.55;font-size:15px;margin-bottom:6px}.alb li{font-size:15px;line-height:1.4}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}.gc{border:1px solid var(--line);padding:6px;display:flex;flex-direction:column;gap:4px}.gc canvas{width:100%;height:auto}.gc small{color:var(--dim);font-size:12px;line-height:1.35}
 </style></head><body>
 <canvas id="scr"></canvas>
 <div id="hud"></div><div id="clock"></div><button id="menub">≡</button><div id="floats"></div>
@@ -2094,7 +2112,7 @@ const BG={
   for(let i=0;i<16;i++)glow(g,R()*W,R()*H*.7,H*.25,'rgba(255,255,255,.18)')}};
 // ===== персонажи =====
 const VC={hero:{top:'#3a5a7a',hair:'#4a3020',jacket:1},father:{top:'#4a4f5a',hair:'#5a4a3a',hat:'hat',coat:1,mus:1,age:1},mother:{top:'#7a3b4a',hair:'#6b4a2b',girl:1,bun:1,age:1},tanya:{top:'#c0392b',hair:'#8a5a2b',girl:1,kid:1,braid:1},
- shama:{top:'#3b3b3b',hair:'#2a1d14',hat:'cap',scar:1,smoke:1},mosol:{top:'#5a6b3a',hair:'#3a2a1a',thin:1,tall:1},kaban:{top:'#6b3b2b',hair:'#1a1a1a',big:1},shket:{top:'#8a6a3a',hair:'#c9a36a',kid:1},
+ shama:{top:'#3b3b3b',hair:'#2a1d14',hat:'cap',scar:1},mosol:{top:'#5a6b3a',hair:'#3a2a1a',thin:1,tall:1},kaban:{top:'#6b3b2b',hair:'#1a1a1a',big:1},shket:{top:'#8a6a3a',hair:'#c9a36a',kid:1},
  lena:{top:'#2c4f8c',hair:'#1d140e',girl:1,braid:1},rustem:{top:'#7a5232',hair:'#1a1a1a',big:1,fur:1},gosha:{top:'#4a5a6a',hair:'#3a2a1a',glasses:1,thin:1},palych:{top:'#1e2a44',hair:'#9a9a9a',big:1,stripes2:1,age:1},
  bizon:{top:'#2a2a2a',hair:'#c0602a',big:1},sabirov:{top:'#6e6e6e',hair:'#222',hat:'hat',coat:1,smoke:1,mus:1,age:1},vadik:{top:'#3a6ea5',hair:'#5a3a1a',thin:1},raisa:{top:'#5a3a5a',hair:'#999',girl:1,bun:1,glasses:1,age:1},
  dinar:{top:'#1e3d8a',hair:'#111',stripes:1,bandage:1},gvozd:{top:'#1e3d8a',hair:'#222',stripes:1,hat:'cap'},zina:{top:'#f0f0ea',hair:'#7a5a3a',girl:1,hat:'scarf',age:1},
@@ -2121,9 +2139,24 @@ function person(g,x,by,h,d,dim,flip){const k=d.kid?.78:1;h*=k;const sw=h*(d.big?
  if(d.girl&&!d.hat){g.beginPath();g.ellipse(hx,hy-r*.35,r*.95,r*.75,0,Math.PI*1.05,-.05);g.fill()}
  if(d.bun){g.beginPath();g.arc(hx,hy-r*1.15,r*.35,0,7);g.fill();g.stroke()}
  // лицо
- g.fillStyle='#1a120c';const ey=hy+r*.05;g.beginPath();g.ellipse(hx-r*.33,ey,r*.09,r*.12,0,0,7);g.ellipse(hx+r*.33,ey,r*.09,r*.12,0,0,7);g.fill();
- g.strokeStyle=shade2(d.hair,-10);g.lineWidth=r*.09;g.beginPath();g.moveTo(hx-r*.5,ey-r*.25);g.lineTo(hx-r*.15,ey-r*(d.scar?.3:.22));g.moveTo(hx+r*.15,ey-r*.22);g.lineTo(hx+r*.5,ey-r*.25);g.stroke();
- g.strokeStyle='#7a3a2a';g.lineWidth=r*.07;g.beginPath();g.moveTo(hx-r*.22,hy+r*.55);g.quadraticCurveTo(hx,hy+r*(d.girl?.66:.6),hx+r*.22,hy+r*.55);g.stroke();
+ const emo=d.emo||'';g.fillStyle='#1a120c';const ey=hy+r*.05;
+ if(emo==='laugh'){g.strokeStyle='#1a120c';g.lineWidth=r*.08;g.beginPath();g.arc(hx-r*.33,ey+r*.05,r*.11,Math.PI*1.1,Math.PI*1.9);g.moveTo(hx+r*.44,ey+r*.02);g.arc(hx+r*.33,ey+r*.05,r*.11,Math.PI*1.1,Math.PI*1.9);g.stroke()}
+ else if(emo==='scared'){g.fillStyle='#fff';g.beginPath();g.ellipse(hx-r*.33,ey,r*.15,r*.18,0,0,7);g.ellipse(hx+r*.33,ey,r*.15,r*.18,0,0,7);g.fill();g.fillStyle='#1a120c';g.beginPath();g.arc(hx-r*.33,ey,r*.06,0,7);g.arc(hx+r*.33,ey,r*.06,0,7);g.fill()}
+ else{g.beginPath();g.ellipse(hx-r*.33,ey,r*.09,emo==='angry'?r*.08:r*.12,0,0,7);g.ellipse(hx+r*.33,ey,r*.09,emo==='angry'?r*.08:r*.12,0,0,7);g.fill()}
+ g.strokeStyle=shade2(d.hair,-10);g.lineWidth=r*.09;g.beginPath();
+ if(emo==='angry'){g.moveTo(hx-r*.52,ey-r*.32);g.lineTo(hx-r*.12,ey-r*.14);g.moveTo(hx+r*.12,ey-r*.14);g.lineTo(hx+r*.52,ey-r*.32)}
+ else if(emo==='sad'||emo==='scared'){g.moveTo(hx-r*.5,ey-r*.2);g.lineTo(hx-r*.15,ey-r*.34);g.moveTo(hx+r*.15,ey-r*.34);g.lineTo(hx+r*.5,ey-r*.2)}
+ else if(emo==='laugh'){g.moveTo(hx-r*.5,ey-r*.3);g.quadraticCurveTo(hx-r*.33,ey-r*.38,hx-r*.15,ey-r*.3);g.moveTo(hx+r*.15,ey-r*.3);g.quadraticCurveTo(hx+r*.33,ey-r*.38,hx+r*.5,ey-r*.3)}
+ else{g.moveTo(hx-r*.5,ey-r*.25);g.lineTo(hx-r*.15,ey-r*(d.scar?.3:.22));g.moveTo(hx+r*.15,ey-r*.22);g.lineTo(hx+r*.5,ey-r*.25)}
+ g.stroke();
+ g.strokeStyle='#7a3a2a';g.lineWidth=r*.07;g.beginPath();
+ if(emo==='laugh'){g.fillStyle='#5a1f16';g.moveTo(hx-r*.28,hy+r*.48);g.quadraticCurveTo(hx,hy+r*.9,hx+r*.28,hy+r*.48);g.closePath();g.fill();g.stroke()}
+ else if(emo==='angry'){g.moveTo(hx-r*.22,hy+r*.62);g.lineTo(hx+r*.22,hy+r*.6);g.stroke()}
+ else if(emo==='sad'){g.moveTo(hx-r*.2,hy+r*.66);g.quadraticCurveTo(hx,hy+r*.5,hx+r*.2,hy+r*.66);g.stroke()}
+ else if(emo==='scared'){g.fillStyle='#5a1f16';g.ellipse(hx,hy+r*.62,r*.09,r*.12,0,0,7);g.fill();g.stroke()}
+ else{g.moveTo(hx-r*.22,hy+r*.55);g.quadraticCurveTo(hx,hy+r*(d.girl?.66:.6),hx+r*.22,hy+r*.55);g.stroke()}
+ if(emo==='sad'){g.fillStyle='rgba(120,180,255,.8)';g.beginPath();g.ellipse(hx-r*.36,ey+r*.25,r*.05,r*.08,0,0,7);g.fill()}
+ if(emo==='angry'){g.strokeStyle='rgba(160,40,30,.45)';g.lineWidth=r*.05;g.beginPath();g.moveTo(hx-r*.08,ey-r*.45);g.lineTo(hx-r*.02,ey-r*.33);g.moveTo(hx+r*.08,ey-r*.45);g.lineTo(hx+r*.02,ey-r*.33);g.stroke()}
  g.strokeStyle='rgba(120,60,40,.5)';g.lineWidth=r*.06;g.beginPath();g.moveTo(hx,ey+r*.05);g.lineTo(hx-r*.08,hy+r*.35);g.lineTo(hx+r*.06,hy+r*.38);g.stroke();
  if(d.mus){g.fillStyle=d.hair;g.fillRect(hx-r*.28,hy+r*.42,r*.56,r*.1)}
  if(d.scar){g.strokeStyle='#f2d8c8';g.lineWidth=r*.06;g.beginPath();g.moveTo(hx+r*.05,hy+r*.38);g.lineTo(hx+r*.2,hy+r*.75);g.stroke()}
@@ -2150,6 +2183,262 @@ function drawMap(g,W,H,o){const se=o.season;lg(g,0,0,W,H,se==='w'?'#dfe6ea':se==
  blk(.05,.6,.2,.08,'#d3c39a');blk(.3,.6,.14,.06,'#b8b19d');blk(.55,.63,.3,.04,'#5d554c');blk(.55,.69,.3,.04,'#5d554c');blk(.4,.78,.12,.06,'#8ea2b2');blk(.75,.73,.16,.06,'#c7b389');
  g.strokeStyle='#7a4a2a';g.lineWidth=4;g.strokeRect(W*.12,H*.33,W*.17,H*.08);for(const p of[[.04,.3],[.3,.18],[.47,.45],[.9,.47],[.05,.5],[.27,.8],[.95,.66],[.5,.62]]){tree(g,W*p[0],H*p[1],H*.06,o)}
  g.strokeStyle='#8b8b86';g.lineWidth=3;for(let i=0;i<3;i++)g.strokeRect(W*(.04+i*.04),H*.82,W*.035,H*.05)}
+// ===== Аккаунт, облако, магазин, настройки, спонсоры =====
+// Вставь сюда данные своего проекта Supabase (Project Settings → API).
+const KF_CFG={url:'https://qrhdxwzxnscmwmlwbrot.supabase.co',key:'sb_publishable_TtEFxQjfMuuCGXqIUSJoig_vdB9dl8v'};
+const TG_URL='https://t.me/derevnyadevlog',TG_NAME='@derevnyadevlog';
+const SPONSORS=[
+ {n:'Дед',d:'Главный спонсор',main:true},
+ {n:'HOV VPN',d:'Быстрый VPN в Telegram',url:'https://t.me/HOV_VPN_BOT?start=ref8682469093'}
+];
+const SPONSOR_CONTACT='@whynotbtww';
+const SHOP=[{id:'life',ic:'❤',t:'Дополнительная жизнь',d:'После смерти вернись к последнему выбору и сыграй иначе. Жизнь хранится на аккаунте и не сгорает.',rub:99,uah:50},
+ {id:'chapters',ic:'📖',t:'Выбор главы',d:'Начинай с любой главы, до которой уже доходил. Не надо проходить всё заново ради другой концовки. Навсегда.',rub:149,uah:75,perm:1}];
+const owns=id=>(NET.unlocks||[]).includes(id);
+
+// ---------- настройки ----------
+const SET={speed:2,vol:1,mus:.5,amb:.6,sfx:.7};
+try{Object.assign(SET,JSON.parse(localStorage.getItem('kf_set')||'{}'))}catch(e){}
+function setSave(){try{localStorage.setItem('kf_set',JSON.stringify(SET))}catch(e){}}
+function settings(){const sp=[['Медленно',1],['Обычно',2],['Быстро',4],['Сразу',999]];
+ $('modalIn').innerHTML=`<h3>НАСТРОЙКИ</h3><div class="sets">
+ <div class="srow"><span>🔊 Озвучка</span><button class="btn" onclick="AU.on=!AU.on;auSave();if(!AU.on)auStop();settings()">${AU.on?'вкл':'выкл'}</button></div>
+ <div class="srow"><span>🗣 Громкость голосов</span><input type="range" min="0" max="100" value="${Math.round(SET.vol*100)}" oninput="SET.vol=this.value/100;if(AU.a)AU.a.volume=SET.vol;setSave()"></div>
+ <div class="srow"><span>🎵 Музыка</span><input type="range" min="0" max="100" value="${Math.round(SET.mus*100)}" oninput="SET.mus=this.value/100;sndVol();setSave()"></div>
+ <div class="srow"><span>🌆 Звуки фона</span><input type="range" min="0" max="100" value="${Math.round(SET.amb*100)}" oninput="SET.amb=this.value/100;sndVol();setSave()"></div>
+ <div class="srow"><span>👊 Эффекты</span><input type="range" min="0" max="100" value="${Math.round(SET.sfx*100)}" oninput="SET.sfx=this.value/100;sndVol();setSave();sfx('hit')"></div>
+ <div class="srow"><span>▶ Авточтение</span><button class="btn" onclick="AU.auto=!AU.auto;auSave();settings()">${AU.auto?'вкл':'выкл'}</button></div>
+ <div class="srow"><span>Скорость текста</span><div class="seg">${sp.map(([n,v])=>`<button class="btn ${SET.speed===v?'on':''}" onclick="SET.speed=${v};setSave();settings()">${n}</button>`).join('')}</div></div>
+ </div><br><button class="btn big" onclick="closeM()">Готово</button>`;$('modal').style.display='flex'}
+
+// ---------- спонсоры ----------
+function sponsors(){$('modalIn').innerHTML=`<h3>СПОНСОРЫ</h3><p class="mdesc">Эти люди помогают игре выходить. Спасибо им.</p><ul class="spl">${SPONSORS.map(x=>`<li class="${x.main?'main':''}">${x.main?'👑':'🤝'} <b>${esc(x.n)}</b><small>${esc(x.d||'')}</small>${x.url?`<a class="btn" href="${x.url}" target="_blank" rel="noopener">Открыть</a>`:''}</li>`).join('')}</ul>
+ <p class="mdesc">Хочешь в список спонсоров — пиши в Telegram <a href="https://t.me/${SPONSOR_CONTACT.slice(1)}" target="_blank" rel="noopener">${SPONSOR_CONTACT}</a>.</p><br><button class="btn big" onclick="closeM()">Закрыть</button>`;$('modal').style.display='flex'}
+
+// ---------- сеть ----------
+const NET={sess:null,lives:0,nick:'',busy:false,pending:null,saveT:null,poll:null};
+const online=()=>!!(KF_CFG.url&&KF_CFG.key);
+try{NET.sess=JSON.parse(localStorage.getItem('kf_sess')||'null')}catch(e){}
+function sessSave(){try{localStorage.setItem('kf_sess',JSON.stringify(NET.sess))}catch(e){}}
+async function api(path,opt={},auth=true){
+ if(auth)await ensureToken();
+ const h=Object.assign({apikey:KF_CFG.key,'Content-Type':'application/json'},opt.headers||{});
+ if(auth&&NET.sess)h.Authorization='Bearer '+NET.sess.access_token;
+ const r=await fetch(KF_CFG.url+path,Object.assign({},opt,{headers:h}));
+ const txt=await r.text();let j=null;try{j=txt?JSON.parse(txt):null}catch(e){j=txt}
+ if(!r.ok){const m=(j&&(j.msg||j.message||j.error_description||j.error))||('Ошибка '+r.status);throw new Error(m)}
+ return j}
+async function ensureToken(){const se=NET.sess;if(!se)return;if(se.expires_at&&Date.now()/1000<se.expires_at-60)return;
+ try{const j=await api('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:se.refresh_token})},false);setSess(j)}catch(e){NET.sess=null;sessSave()}}
+function setSess(j){NET.sess={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:j.expires_at||(Date.now()/1000+(j.expires_in||3600)),user:{id:j.user.id,email:j.user.email,nick:(j.user.user_metadata||{}).nick||''}};sessSave()}
+const userNick=()=>NET.sess?(NET.sess.user.nick||NET.sess.user.email.split('@')[0]):'';
+function errRu(m){m=String(m||'');
+ if(/Invalid login/i.test(m))return'Неверная почта или пароль';
+ if(/already registered|already exists/i.test(m))return'Такая почта уже зарегистрирована — войди';
+ if(/Password should be/i.test(m))return'Пароль слишком короткий (минимум 6 символов)';
+ if(/valid email|invalid format/i.test(m))return'Проверь почту — похоже, опечатка';
+ if(/not confirmed/i.test(m))return'Подтверди почту по ссылке из письма';
+ if(/Failed to fetch|NetworkError/i.test(m))return'Нет связи с сервером. Проверь интернет';
+ return m}
+
+// ---------- аккаунт ----------
+function account(tab){if(!online()){$('modalIn').innerHTML=`<h3>АККАУНТ</h3><p class="mdesc">Аккаунты скоро появятся. Пока прогресс сохраняется на этом устройстве.</p><br><button class="btn big" onclick="closeM()">Ок</button>`;$('modal').style.display='flex';return}
+ if(NET.sess){$('modalIn').innerHTML=`<h3>АККАУНТ</h3><div class="acc"><div class="an">👤 ${esc(userNick())}</div><small>${esc(NET.sess.user.email)}</small>
+  <div class="mst" style="margin-top:12px"><div>❤ Жизней: <b>${NET.lives}</b></div><div>☁ Облако: <b>${NET.cloudAt?'сохранено':'—'}</b></div></div></div>
+  <p class="mdesc">Прогресс и концовки сохраняются в облаке. Войди с этой почтой на другом устройстве — и продолжишь с того же места.</p>
+  <div class="mbtns"><button class="btn big" onclick="cloudPush(true)">☁ Сохранить в облако сейчас</button><button class="btn" onclick="shop()">🛒 Магазин</button><button class="btn" onclick="logout()">Выйти из аккаунта</button><button class="btn" onclick="closeM()">Закрыть</button></div>`;$('modal').style.display='flex';return}
+ tab=tab||'in';
+ $('modalIn').innerHTML=`<h3>АККАУНТ ИГРОКА</h3><div class="tabs"><button class="btn ${tab==='in'?'on':''}" onclick="account('in')">Вход</button><button class="btn ${tab==='up'?'on':''}" onclick="account('up')">Регистрация</button></div>
+ <p class="mdesc">${tab==='up'?'Прогресс будет храниться в облаке и откроется на любом устройстве.':'Войди, чтобы продолжить с того места, где остановился.'}</p>
+ <form class="af" onsubmit="event.preventDefault();authGo('${tab}')">
+ <label>Почта<input id="aem" type="email" autocomplete="email" required></label>
+ <label>Пароль<input id="apw" type="password" autocomplete="${tab==='up'?'new-password':'current-password'}" minlength="6" required></label>
+ ${tab==='up'?'<label>Ник<input id="ank" maxlength="20" required></label>':''}
+ <div id="aerr" class="aerr"></div>
+ <div class="mbtns"><button class="btn big" type="submit">${tab==='up'?'Создать аккаунт':'Войти'}</button>${tab==='in'?'<button class="btn" type="button" onclick="forgot()">Забыли пароль?</button>':''}<button class="btn" type="button" onclick="closeM()">Отмена</button></div></form>`;$('modal').style.display='flex'}
+async function authGo(tab){if(NET.busy)return;NET.busy=true;const em=$('aem').value.trim(),pw=$('apw').value,nk=tab==='up'?$('ank').value.trim():'';const er=$('aerr');er.textContent='Подожди…';
+ try{let j;if(tab==='up'){j=await api('/auth/v1/signup',{method:'POST',body:JSON.stringify({email:em,password:pw,data:{nick:nk}})},false);
+   if(!j.access_token){er.textContent='Почти готово! Мы отправили письмо на '+em+' — подтверди почту и войди.';NET.busy=false;return}}
+  else j=await api('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email:em,password:pw})},false);
+  setSess(j);await afterLogin();toast('👤 Вошёл как '+userNick());account()}
+ catch(e){er.textContent=errRu(e.message)}NET.busy=false}
+async function forgot(){const em=$('aem').value.trim();const er=$('aerr');if(!em){er.textContent='Впиши почту, и мы пришлём ссылку для нового пароля';return}
+ try{await api('/auth/v1/recover',{method:'POST',body:JSON.stringify({email:em})},false);er.textContent='Письмо со ссылкой отправлено на '+em}catch(e){er.textContent=errRu(e.message)}}
+function logout(){NET.sess=null;NET.lives=0;NET.cloudAt=null;sessSave();toast('Вышел из аккаунта');closeM();titleBtns()}
+
+// ---------- облако ----------
+function localStamp(){return+(localStorage.getItem('kf_ts')||0)}
+async function afterLogin(){await walletLoad();await cloudPull();titleBtns()}
+async function cloudPull(){if(!NET.sess)return;try{
+ const rows=await api('/rest/v1/kf_saves?select=save,ends,chaps,updated_at&user_id=eq.'+NET.sess.user.id);const row=rows&&rows[0];
+ if(!row){await cloudPush();return}
+ const ct=Date.parse(row.updated_at)||0;NET.cloudAt=ct;
+ try{const e=getEnds();Object.assign(e,row.ends||{});localStorage.setItem('kf_ends',JSON.stringify(e))}catch(e){}
+ try{const ch=getChaps();for(const k in(row.chaps||{}))if(!ch[k])ch[k]=row.chaps[k];localStorage.setItem('kf_chaps',JSON.stringify(ch))}catch(e){}
+ if(row.save&&S[row.save.cur]&&ct>localStamp()+2000){localStorage.setItem('kf_vn',JSON.stringify(row.save));localStorage.setItem('kf_ts',String(ct));toast('☁ Загружено сохранение из облака')}
+ else if(localStamp()>ct+2000)await cloudPush()}catch(e){console.warn('cloud pull',e)}}
+async function cloudPush(manual){if(!NET.sess||!online())return;try{
+ const sv=loadSave();const body={user_id:NET.sess.user.id,save:sv,ends:getEnds(),chaps:getChaps(),updated_at:new Date().toISOString()};
+ await api('/rest/v1/kf_saves',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(body)});
+ NET.cloudAt=Date.now();if(manual){toast('☁ Сохранено в облако');account()}}catch(e){if(manual)toast('☁ Не удалось: '+errRu(e.message));console.warn('cloud push',e)}}
+function cloudSoon(){try{localStorage.setItem('kf_ts',String(Date.now()))}catch(e){}if(!NET.sess)return;clearTimeout(NET.saveT);NET.saveT=setTimeout(cloudPush,4000)}
+window.addEventListener('pagehide',()=>{if(NET.sess&&NET.saveT){clearTimeout(NET.saveT);cloudPush()}});
+
+// ---------- магазин ----------
+async function fn(action,data){return api('/functions/v1/kf-shop',{method:'POST',body:JSON.stringify(Object.assign({action},data||{}))})}
+async function walletLoad(){if(!NET.sess)return;try{const j=await fn('wallet');NET.lives=j.lives||0;NET.unlocks=j.unlocks||[]}catch(e){console.warn('wallet',e)}}
+function shop(){if(!online()){$('modalIn').innerHTML=`<h3>МАГАЗИН</h3><p class="mdesc">Магазин скоро откроется. Следи за новостями в <a href="${TG_URL}" target="_blank" rel="noopener">${TG_NAME}</a>.</p><br><button class="btn big" onclick="closeM()">Ок</button>`;$('modal').style.display='flex';return}
+ $('modalIn').innerHTML=`<h3>МАГАЗИН</h3>${NET.sess?`<div class="mst"><div>👤 ${esc(userNick())}</div><div>❤ Жизней: <b>${NET.lives}</b></div></div>`:''}
+ ${SHOP.map(it=>{const own=it.perm&&owns(it.id);return`<div class="sitem"><div class="sic">${it.ic}</div><div style="flex:1"><b>${esc(it.t)}</b><p>${esc(it.d)}</p>${own?`<div class="spr">✓ Куплено</div><button class="btn" onclick="chapters()">Открыть</button>`:`<div class="spr">${it.rub} ₽ · ${it.uah} грн</div>${NET.sess?`<div class="sbuy"><button class="btn" onclick="buy('donatello','${it.id}')">💳 Картой — ${it.uah} грн</button><button class="btn" onclick="buy('cryptobot','${it.id}')">🪙 Криптой — ${it.rub} ₽</button></div>`:''}`}</div></div>`}).join('')}
+ ${NET.sess?'':`<p class="mdesc">Чтобы покупки сохранились, сначала войди в аккаунт.</p><div class="mbtns"><button class="btn big" onclick="account('in')">👤 Войти</button></div>`}
+ <br><button class="btn" onclick="closeM()">Закрыть</button>`;$('modal').style.display='flex'}
+async function buy(prov,item){item=item||'life';const box=$('modalIn');box.innerHTML=`<h3>ОПЛАТА</h3><p class="mdesc">Создаю заказ…</p>`;
+ try{const o=await fn('create_order',{item,provider:prov});o.item=item;NET.pending=o;
+  if(prov==='donatello'){box.innerHTML=`<h3>ОПЛАТА КАРТОЙ</h3><ol class="steps"><li>Скопируй код заказа:<div class="code" onclick="copyCode('${o.code}')">${o.code} <small>📋 нажми, чтобы скопировать</small></div></li><li>Открой Donatello и отправь <b>${o.amount} грн</b>. В поле <b>сообщения</b> вставь код <b>${o.code}</b> — по нему мы узнаем, что это ты.</li><li>Вернись сюда. Покупка придёт сама за минуту.</li></ol>
+   <div class="mbtns"><a class="btn big" href="${o.url}" target="_blank" rel="noopener">Открыть Donatello</a><button class="btn" onclick="checkOrder(true)">Я оплатил — проверить</button><div id="ost" class="aerr"></div><button class="btn" onclick="stopPoll();shop()">Назад</button></div>`}
+  else{box.innerHTML=`<h3>ОПЛАТА КРИПТОЙ</h3><p class="mdesc">Откроется CryptoBot в Telegram. Оплати счёт на <b>${o.amount} ₽</b> в любой монете и вернись сюда — покупка придёт сама.</p>
+   <div class="mbtns"><a class="btn big" href="${o.url}" target="_blank" rel="noopener">Открыть CryptoBot</a><button class="btn" onclick="checkOrder(true)">Я оплатил — проверить</button><div id="ost" class="aerr"></div><button class="btn" onclick="stopPoll();shop()">Назад</button></div>`}
+  stopPoll();let n=0;NET.poll=setInterval(()=>{if(++n>90||$('modal').style.display!=='flex'){stopPoll();return}checkOrder(false)},10000)}
+ catch(e){box.innerHTML=`<h3>ОПЛАТА</h3><p class="mdesc">Не получилось создать заказ: ${esc(errRu(e.message))}</p><button class="btn" onclick="shop()">Назад</button>`}}
+function stopPoll(){clearInterval(NET.poll);NET.poll=null}
+function copyCode(c){try{navigator.clipboard.writeText(c);toast('📋 Код скопирован')}catch(e){}}
+async function checkOrder(manual){const o=NET.pending;if(!o)return;const st=$('ost');if(manual&&st)st.textContent='Проверяю…';
+ try{const j=await fn('check',{code:o.code});if(j.status==='paid'){stopPoll();NET.pending=null;NET.lives=j.lives;NET.unlocks=j.unlocks||NET.unlocks;sfx('buy');const it=SHOP.find(x=>x.id===o.item)||SHOP[0];toast(it.ic+' '+it.t+' — куплено!');
+   $('modalIn').innerHTML=`<h3>ГОТОВО</h3><p class="mdesc">${it.ic} Спасибо за поддержку! «${esc(it.t)}» уже на твоём аккаунте.${o.item==='life'?` Всего жизней: <b>${j.lives}</b>.`:''}</p><br><div class="mbtns">${o.item==='chapters'?'<button class="btn big" onclick="chapters()">Выбрать главу</button>':''}<button class="btn ${o.item==='life'?'big':''}" onclick="closeM();if(s&&s.mode==='scene')renderScene()">Отлично</button></div>`}
+  else if(manual&&st)st.textContent='Оплата пока не пришла. Обычно это 1–2 минуты — проверим ещё раз автоматически.'}
+ catch(e){if(manual&&st)st.textContent=errRu(e.message)}}
+
+// ---------- жизнь после смерти ----------
+async function useLife(){if(!NET.sess){account('in');return}if(!s.undo){toast('Тут нечего переигрывать');return}
+ if(NET.lives<1){shop();return}
+ try{const j=await fn('use_life');NET.lives=j.lives;s=JSON.parse(s.undo);SCN=null;save();render();toast('❤ Жизнь потрачена. Осталось: '+j.lives)}
+ catch(e){toast(errRu(e.message))}}
+function lifeBtn(){if(!online())return`<button class="ch" onclick="undo()">↺ Переиграть последний выбор</button>`;if(!NET.sess)return`<button class="ch" onclick="account('in')">❤ Войди, чтобы вернуться к последнему выбору</button>`;
+ return NET.lives>0?`<button class="ch" onclick="useLife()">❤ Потратить жизнь и переиграть последний выбор <small>жизней: ${NET.lives}</small></button>`:`<button class="ch" onclick="shop()">❤ Купить жизнь и переиграть последний выбор <small>99 ₽ · 50 грн</small></button>`}
+
+if(online()&&NET.sess){ensureToken().then(()=>{if(NET.sess)afterLogin()})}
+// ===== Музыка, фон, звуки — всё синтезируется в браузере (без файлов) =====
+const SND={ctx:null,mus:null,amb:null,fx:null,duck:null,cur:'',nodes:[],timers:[],nextBar:0,step:0,pat:null};
+const AMB_OF={yard:'out',street:'out',entrance:'out',garages:'out',schoolyard:'out',pustyr:'out',roof:'wind',sloboda:'out',river:'river',
+ tram:'train',train:'train',market:'crowd',station:'crowd',court:'crowd',
+ kitchen:'clock',room:'room',stair:'room',bakery:'room',class:'clock',office:'clock',militia:'clock',bath:'room',kach:'gym',gym:'gym',
+ dk:'disco',videosalon:'vhs',cafe:'cafe'};
+function sndInit(){if(SND.ctx)return true;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
+ const c=new AC();SND.ctx=c;const mk=v=>{const gn=c.createGain();gn.gain.value=v;return gn};
+ SND.duck=mk(1);SND.duck.connect(c.destination);
+ SND.mus=mk(SET.mus??.5);SND.amb=mk(SET.amb??.6);SND.fx=mk(SET.sfx??.7);SND.mus.connect(SND.duck);SND.amb.connect(SND.duck);SND.fx.connect(c.destination);
+ const n=c.sampleRate*2;const b=c.createBuffer(1,n,c.sampleRate);const d=b.getChannelData(0);let last=0;for(let i=0;i<n;i++){const w=Math.random()*2-1;last=(last+.02*w)/1.02;d[i]=last*3.5}SND.brown=b;
+ const b2=c.createBuffer(1,n,c.sampleRate);const d2=b2.getChannelData(0);for(let i=0;i<n;i++)d2[i]=Math.random()*2-1;SND.white=b2;
+ setInterval(sndTick,50);if(SND.want)setTimeout(()=>sndScene(SND.want),50);return true}
+['pointerdown','keydown','touchstart'].forEach(ev=>window.addEventListener(ev,()=>{if(sndInit()&&SND.ctx.state==='suspended')SND.ctx.resume()},{passive:true}));
+function sndVol(){if(!SND.ctx)return;const t=SND.ctx.currentTime;SND.mus.gain.setTargetAtTime(SET.mus,t,.1);SND.amb.gain.setTargetAtTime(SET.amb,t,.1);SND.fx.gain.setTargetAtTime(SET.sfx,t,.1)}
+function noise(buf,dest,f,q,type,gain){const c=SND.ctx,s=c.createBufferSource();s.buffer=buf;s.loop=true;const fl=c.createBiquadFilter();fl.type=type||'lowpass';fl.frequency.value=f;fl.Q.value=q||.7;const gn=c.createGain();gn.gain.value=gain;s.connect(fl);fl.connect(gn);gn.connect(dest);s.start();SND.nodes.push(s,gn);return{s,fl,gn}}
+function tone(dest,f,t0,dur,type,vol,att,rel,det){const c=SND.ctx,o=c.createOscillator(),gn=c.createGain();o.type=type||'sine';o.frequency.value=f;if(det)o.detune.value=det;gn.gain.setValueAtTime(0,t0);gn.gain.linearRampToValueAtTime(vol,t0+(att||.01));gn.gain.setTargetAtTime(0,t0+Math.max(att||.01,dur-(rel||.1)),(rel||.1)/3);o.connect(gn);gn.connect(dest);o.start(t0);o.stop(t0+dur+(rel||.1)+.3)}
+function burst(dest,t0,dur,f,type,vol,q){const c=SND.ctx,s=c.createBufferSource();s.buffer=SND.white;const fl=c.createBiquadFilter();fl.type=type||'highpass';fl.frequency.value=f;fl.Q.value=q||1;const gn=c.createGain();gn.gain.setValueAtTime(vol,t0);gn.gain.exponentialRampToValueAtTime(.001,t0+dur);s.connect(fl);fl.connect(gn);gn.connect(dest);s.start(t0,Math.random());s.stop(t0+dur+.05)}
+function kick(dest,t0,vol){const c=SND.ctx,o=c.createOscillator(),gn=c.createGain();o.frequency.setValueAtTime(140,t0);o.frequency.exponentialRampToValueAtTime(42,t0+.12);gn.gain.setValueAtTime(vol,t0);gn.gain.exponentialRampToValueAtTime(.001,t0+.3);o.connect(gn);gn.connect(dest);o.start(t0);o.stop(t0+.35)}
+const NOTE=n=>440*Math.pow(2,(n-69)/12);
+// ---------- музыкальные петли ----------
+const MUS={
+ theme:{bpm:72,bars:[[57,60,64],[53,57,60],[55,59,62],[52,55,59]],play(t,bar,st,spb){const ch=this.bars[bar%4];if(st===0)ch.forEach(n=>tone(SND.mus,NOTE(n),t,spb*4,'triangle',.05,.6,1.2,(Math.random()-.5)*8));
+   if(st%2===0){const n=ch[(st/2)%3]+12;tone(SND.mus,NOTE(n),t,spb*.9,'sine',.035,.02,.5)}if(st===0)tone(SND.mus,NOTE(ch[0]-12),t,spb*4,'sine',.07,.3,1)}},
+ disco:{bpm:118,bars:[[45,57,60,64],[41,53,57,60],[43,55,59,62],[40,52,55,59]],play(t,bar,st,spb){const ch=this.bars[bar%4],q=spb/2;
+   for(let i=0;i<2;i++){const tt=t+i*q;if(i===0&&st%1===0)kick(SND.mus,tt,.5);if(i===1)burst(SND.mus,tt,.05,7000,'highpass',.12);tone(SND.mus,NOTE(ch[0]+(i?12:0)),tt,q*.8,'sawtooth',.05,.005,.05)}
+   if(st===1||st===3)burst(SND.mus,t,.15,1800,'bandpass',.18,.8);
+   if(st===0||st===2)ch.slice(1).forEach(n=>tone(SND.mus,NOTE(n+12),t+q,q*.7,'square',.018,.005,.08))}},
+ vhs:{bpm:90,bars:[[50,53,57],[48,52,55],[46,50,53],[45,49,52]],play(t,bar,st,spb){const ch=this.bars[bar%4];if(st===0)ch.forEach(n=>tone(SND.mus,NOTE(n),t,spb*4,'sawtooth',.018,1,1.5,(Math.random()-.5)*20));if(st===0||st===2)kick(SND.mus,t,.25);if(st===1||st===3)burst(SND.mus,t,.1,2500,'bandpass',.08)}},
+ cafe:{bpm:96,bars:[[60,64,67,71],[57,60,64,67],[62,65,69,72],[55,59,62,65]],play(t,bar,st,spb){const ch=this.bars[bar%4];tone(SND.mus,NOTE(ch[st%4]),t,spb*.9,'triangle',.04,.01,.4);if(st===0)tone(SND.mus,NOTE(ch[0]-24),t,spb*3,'sine',.06,.05,.6)}},
+ tense:{bpm:60,bars:[[38],[38],[37],[39]],play(t,bar,st,spb){const ch=this.bars[bar%4];if(st===0){tone(SND.mus,NOTE(ch[0]),t,spb*4,'sawtooth',.03,1,1);tone(SND.mus,NOTE(ch[0]+1),t,spb*4,'sine',.03,1,1)}if(st===2)kick(SND.mus,t,.35)}}
+};
+function sndTick(){const c=SND.ctx;if(!c||!SND.pat)return;const p=MUS[SND.pat],spb=60/p.bpm;while(SND.nextBar<c.currentTime+.3){if(SND.nextBar<c.currentTime-.5)SND.nextBar=c.currentTime+.05;p.play(SND.nextBar,Math.floor(SND.step/4),SND.step%4,spb);SND.step++;SND.nextBar+=spb}
+ // случайные звуки фона
+ const a=SND.ambKind;if(!a)return;const r=Math.random();const night=typeof tod==='function'&&!!s&&tod()===3,winter=typeof season==='function'&&!!s&&season()==='w';
+ if(a==='out'||a==='river'){if(!night&&!winter&&r<.012){const f=2600+Math.random()*1500,t=c.currentTime;for(let i=0;i<2+Math.floor(Math.random()*3);i++)tone(SND.amb,f+(Math.random()-.5)*400,t+i*.09,.06,'sine',.02,.005,.04)}
+  if(night&&!winter&&r<.03)tone(SND.amb,4200,c.currentTime,.05,'square',.006,.002,.03);
+  if(r>.997)carPass()}
+ if(a==='clock'&&SND.tickT<c.currentTime){SND.tickT=c.currentTime+1;burst(SND.amb,c.currentTime,.03,3000,'bandpass',.05,5)}
+ if(a==='train'&&SND.tickT<c.currentTime){SND.tickT=c.currentTime+1.4;const t=c.currentTime;kick(SND.amb,t,.12);kick(SND.amb,t+.18,.1)}
+ if(a==='gym'&&r<.006){kick(SND.amb,c.currentTime,.2);burst(SND.amb,c.currentTime,.12,400,'lowpass',.15)}
+}
+function carPass(){const c=SND.ctx,t=c.currentTime;const n=noise(SND.brown,SND.amb,300,1,'bandpass',0);n.gn.gain.setValueAtTime(0,t);n.gn.gain.linearRampToValueAtTime(.25,t+1.5);n.gn.gain.linearRampToValueAtTime(0,t+3.2);n.fl.frequency.setValueAtTime(250,t);n.fl.frequency.linearRampToValueAtTime(500,t+1.5);n.fl.frequency.linearRampToValueAtTime(220,t+3.2);setTimeout(()=>{try{n.s.stop()}catch(e){}},3500)}
+function sndStop(){SND.nodes.forEach(x=>{try{x.stop?x.stop():x.disconnect()}catch(e){}});SND.nodes=[];SND.pat=null;SND.ambKind=null}
+// куда звук: title | map | bg-ключ сцены
+function sndScene(key){if(!SND.ctx){SND.want=key;return}if(key===SND.cur)return;SND.cur=key;const c=SND.ctx,t=c.currentTime;
+ SND.mus.gain.cancelScheduledValues(t);SND.mus.gain.setTargetAtTime(0,t,.25);SND.amb.gain.setTargetAtTime(0,t,.25);
+ setTimeout(()=>{if(SND.cur!==key)return;sndStop();const a=key==='title'?'theme':key==='map'?'out':(AMB_OF[key]||'out');const winter=typeof season==='function'&&!!s&&season()==='w';
+  SND.ambKind=a;SND.step=0;SND.nextBar=SND.ctx.currentTime+.1;SND.tickT=0;
+  if(a==='theme')SND.pat='theme';
+  if(a==='out'||a==='wind'){noise(SND.brown,SND.amb,a==='wind'||winter?600:350,.5,'lowpass',winter||a==='wind'?.35:.18);noise(SND.brown,SND.amb,90,.7,'lowpass',.2)}
+  if(a==='river'){noise(SND.white,SND.amb,900,.4,'lowpass',.05);noise(SND.brown,SND.amb,400,.5,'lowpass',.2)}
+  if(a==='train'){noise(SND.brown,SND.amb,180,.8,'lowpass',.45)}
+  if(a==='crowd'){const n=noise(SND.brown,SND.amb,700,2,'bandpass',.35);const l=SND.ctx.createOscillator(),lg=SND.ctx.createGain();l.frequency.value=.3;lg.gain.value=.12;l.connect(lg);lg.connect(n.gn.gain);l.start();SND.nodes.push(l)}
+  if(a==='room'||a==='clock'||a==='gym'){noise(SND.brown,SND.amb,120,.7,'lowpass',.12);tone(SND.amb,50,SND.ctx.currentTime,9999,'sine',.012,1,1)}
+  if(a==='disco'){SND.pat='disco';noise(SND.brown,SND.amb,800,1.5,'bandpass',.1)}
+  if(a==='vhs'){SND.pat='vhs';noise(SND.white,SND.amb,5000,.5,'highpass',.012)}
+  if(a==='cafe'){SND.pat='cafe';noise(SND.brown,SND.amb,700,2,'bandpass',.12)}
+  const t2=SND.ctx.currentTime;SND.mus.gain.setTargetAtTime(SET.mus,t2,.6);SND.amb.gain.setTargetAtTime(SET.amb,t2,.6)},350)}
+function sndMini(on){if(!SND.ctx)return;if(on){SND.prevKey=SND.cur;SND.cur='';sndStop();SND.pat='tense';SND.step=0;SND.nextBar=SND.ctx.currentTime+.05;SND.mus.gain.setTargetAtTime(SET.mus,SND.ctx.currentTime,.3)}else{const k=SND.prevKey;SND.cur='';sndScene(k||'map')}}
+function sndDuck(on){if(SND.ctx)SND.duck.gain.setTargetAtTime(on?.45:1,SND.ctx.currentTime,.15)}
+// ---------- эффекты ----------
+function sfx(k){if(!SND.ctx)return;const c=SND.ctx,t=c.currentTime,d=SND.fx;
+ if(k==='hit'){kick(d,t,.9);burst(d,t,.12,900,'lowpass',.6);burst(d,t,.05,3000,'highpass',.25)}
+ if(k==='whoosh'){const s=c.createBufferSource();s.buffer=SND.white;const f=c.createBiquadFilter();f.type='bandpass';f.Q.value=2;f.frequency.setValueAtTime(400,t);f.frequency.exponentialRampToValueAtTime(3000,t+.18);const gn=c.createGain();gn.gain.setValueAtTime(.3,t);gn.gain.exponentialRampToValueAtTime(.001,t+.22);s.connect(f);f.connect(gn);gn.connect(d);s.start(t);s.stop(t+.3)}
+ if(k==='coin'){tone(d,1568,t,.08,'square',.08,.003,.05);tone(d,2093,t+.08,.18,'square',.08,.003,.12)}
+ if(k==='click')burst(d,t,.02,2500,'bandpass',.15,3);
+ if(k==='death'){tone(d,NOTE(45),t,3,'sawtooth',.12,.05,2);tone(d,NOTE(46),t,3,'sawtooth',.08,.05,2);tone(d,NOTE(81),t+.2,2.5,'sine',.08,.01,2)}
+ if(k==='good'){[57,61,64,69].forEach((n,i)=>tone(d,NOTE(n),t+i*.12,2.2,'triangle',.08,.02,1.2))}
+ if(k==='buy'){[72,76,79,84].forEach((n,i)=>tone(d,NOTE(n),t+i*.08,.4,'square',.05,.005,.2))}
+}
+// ---------- эмоции и тряска по тексту реплики ----------
+const EMO_RX=[['laugh',/ржёт|ржут|смеётся|смеёшься|хохоч|усмеха|улыба|ухмыл|весел|подмигива/i],['angry',/орёт|рявк|зло|злится|сплёвыва|цедит|кулак|сжимает|ярост|гаркн|бешен|сквозь зубы|прищур/i],['scared',/боит|дрож|испуг|страх|бледн|пятит|трясёт|паник|вздрагива/i],['sad',/плач|слёз|слез|грустн|вздыха|опускает глаза|тихо говорит|молчит|устало/i]];
+function emoOf(t){if(!t)return'';for(const[k,rx]of EMO_RX)if(rx.test(t))return k;if((t.match(/!/g)||[]).length>=2)return'angry';return''}
+const HIT_RX=/удар|бьёт|бьют|бьёшь|врезал|врезает|кулаком|в челюсть|в нос|в живот|падаешь|сбивает|выстрел|пинок|пинает|хрустит|кастет/i;
+function fxChunk(t){if(HIT_RX.test(t)){CV.shake=1;sfx('hit')}}
+// ===== Карточка концовки «Поделиться» =====
+function archetype(){const f=s.f||{};
+ if(f.snitched)return['Крыса','Сдал своих. В Казани такое не прощают.'];
+ if(f.gang&&s.avt>=60)return['Авторитет','Пришился и поднялся. Улица знает имя.'];
+ if(f.gang)return['Пришитый','Свой среди своих. Пока.'];
+ if(f.solo)return['Чушпан','Не пошёл ни с кем. Сам по себе — до конца.'];
+ if(f.peacemaker)return['Миротворец','Остановил войну, которую все ждали.'];
+ return['Новенький','Так и не понял, с какой он улицы.']}
+function wrapTxt(g,t,maxW){const w=t.split(' ');const L=[];let cur='';w.forEach(x=>{const tt=cur?cur+' '+x:x;if(g.measureText(tt).width>maxW&&cur){L.push(cur);cur=x}else cur=tt});if(cur)L.push(cur);return L}
+function endCard(){const sc=S[s.cur];if(!sc||!sc.end)return null;const e=sc.end;const ttl=V(e.title);
+ const W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+ try{g.drawImage(bgImg(W,Math.round(H*.62)),0,0)}catch(err){}
+ const D=sceneData();const n=Math.min(3,D.chars.length);D.chars.slice(0,3).forEach((id,i)=>{const pos=[[.5],[.32,.68],[.2,.5,.8]][n-1];try{person(g,W*pos[i],H*.585,H*.38,Object.assign({},vdef(id,s.stage,season()),{emo:e.kind==='death'?'sad':''}),false,i<n/2&&n>1)}catch(err){}});
+ let gr=g.createLinearGradient(0,H*.3,0,H*.66);gr.addColorStop(0,'rgba(11,9,7,0)');gr.addColorStop(1,'rgba(11,9,7,1)');g.fillStyle=gr;g.fillRect(0,0,W,H*.66);
+ g.fillStyle='#0b0907';g.fillRect(0,H*.66,W,H*.34);
+ g.fillStyle='rgba(11,9,7,.7)';g.fillRect(0,0,W,210);
+ g.textAlign='center';g.fillStyle='#efe4d0';g.font='bold 70px "Courier New",monospace';g.fillText('КАЗАНСКИЙ',W/2,105);g.fillStyle='#c0392b';g.fillText('ФЕНОМЕН',W/2,180);
+ const red=e.kind==='death';g.fillStyle=red?'#c0392b':'#d4a84a';g.font='bold 38px "Courier New",monospace';g.fillText(red?'✝  МОЯ СМЕРТЬ':'★  МОЯ КОНЦОВКА',W/2,H*.62);
+ g.fillStyle='#efe4d0';g.font='bold 92px Georgia,serif';const L=wrapTxt(g,ttl,W-140);L.forEach((l,i)=>g.fillText(l,W/2,H*.62+120+i*100));
+ let y=H*.62+100+L.length*100;const[a,ad]=archetype();
+ g.strokeStyle='#3a2e22';g.lineWidth=3;g.beginPath();g.moveTo(140,y);g.lineTo(W-140,y);g.stroke();y+=70;
+ g.fillStyle='#a3967f';g.font='34px "Courier New",monospace';g.fillText('КЕМ Я СТАЛ',W/2,y);y+=80;
+ g.fillStyle='#d4a84a';g.font='bold 76px Georgia,serif';g.fillText(a,W/2,y);y+=60;
+ g.fillStyle='#a3967f';g.font='italic 36px Georgia,serif';wrapTxt(g,ad,W-200).forEach(l=>{g.fillText(l,W/2,y);y+=46});
+ const got=getEnds(),all=Object.values(S).filter(x=>x.end&&x.end.kind!=='stage');
+ g.fillStyle='#efe4d0';g.font='bold 40px "Courier New",monospace';g.fillText(`Открыто концовок: ${all.filter(x=>got[x.end.id]).length} из ${all.length}`,W/2,H-250);
+ g.fillStyle='#c0392b';g.font='bold 46px Georgia,serif';g.fillText('А у тебя что выйдет?',W/2,H-165);
+ g.fillStyle='#9fd0ff';g.font='bold 38px "Courier New",monospace';g.fillText(location.host?location.host+'  ·  тгк '+TG_NAME:'тгк '+TG_NAME,W/2,H-85);
+ return{c,ttl}}
+async function shareEnd(){const r=endCard();if(!r)return;sfx('click');
+ const blob=await new Promise(res=>r.c.toBlob(res,'image/png'));const file=new File([blob],'kazanskiy-fenomen.png',{type:'image/png'});
+ const text=`Моя концовка в «Казанском феномене»: ${r.ttl}. А у тебя что выйдет? ${location.href.split('#')[0]}`;
+ try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text});return}}catch(e){if(e&&e.name==='AbortError')return}
+ const url=URL.createObjectURL(blob);$('modalIn').innerHTML=`<h3>ПОДЕЛИТЬСЯ</h3><p class="mdesc">Сохрани картинку и выложи в сторис или ТикТок. Отметь ${TG_NAME}!</p><img src="${url}" style="width:100%;border:1px solid var(--line)"><div class="mbtns" style="margin-top:12px"><a class="btn big" href="${url}" download="kazanskiy-fenomen.png">⬇ Скачать картинку</a><button class="btn" onclick="closeM()">Закрыть</button></div>`;$('modal').style.display='flex'}
+// ===== Выбор главы =====
+function getChaps(){try{return JSON.parse(localStorage.getItem('kf_chaps')||'{}')}catch(e){return{}}}
+function chapOrder(){const o=[];for(const k in S){const c=S[k].chap;if(c&&!o.includes(c))o.push(c)}return o}
+function saveChap(){if(!s||s.side||s.mode!=='scene'||s.ci!==0)return;const sc=S[s.cur];if(!sc||!sc.chap)return;const ch=getChaps();
+ if(ch[sc.chap]&&ch[sc.chap].cur===s.cur)return;ch[sc.chap]={cur:s.cur,at:Date.now(),st:JSON.stringify(Object.assign({},s,{undo:null}))};try{localStorage.setItem('kf_chaps',JSON.stringify(ch))}catch(e){}}
+function chapters(){const ch=getChaps(),ord=chapOrder(),own=owns('chapters');
+ let h=`<h3>ВЫБОР ГЛАВЫ</h3><p class="mdesc">${own?'Начни с любой главы, до которой уже доходил. Текущее сохранение заменится.':'Начинай с любой главы, до которой уже доходил, — без прохождения заново.'}</p><ul class="chl">`;
+ ord.forEach((c,i)=>{const ok=!!ch[c];h+=`<li class="${ok?'':'no'}"><span>${ok?esc(c):'🔒 '+esc(c.replace(/Глава \d+\. .*/,'Глава ???'))}</span>${ok&&own?`<button class="btn" onclick="playChap(${i})">Играть ▶</button>`:''}</li>`});
+ h+=`</ul>${own?'':`<div class="mbtns"><button class="btn big" onclick="shop()">📖 Купить «Выбор главы» — 149 ₽ · 75 грн</button></div>`}<br><button class="btn" onclick="closeM()">Закрыть</button>`;
+ $('modalIn').innerHTML=h;$('modal').style.display='flex'}
+function playChap(i){const c=chapOrder()[i],ch=getChaps()[c];if(!ch||!owns('chapters'))return;try{s=JSON.parse(ch.st);s.ci=0;SCN=null;save();closeM();$('title').style.display='none';render();card(c.split('·').pop().trim(),'')}catch(e){toast('Не удалось открыть главу')}}
+
 // ===== ВИЗУАЛЬНАЯ НОВЕЛЛА: ДВИЖОК =====
 const LOCS={home:['home','Дом, кухня'],stair:['home','Лестница в подъезде'],pod:['yard','Двор у подъезда'],yard:['yard','Двор, хоккейная коробка'],bakery_out:['bakery','У булочной'],bakery:['bakery','Булочная'],
  lena:['lena','Подъезд Лены'],roof:['roof','Крыша девятиэтажки'],school:['school','Школа, класс'],schoolyard:['school','Школьный двор'],post:['post','Почта'],tram:['tram','Трамвайная остановка'],
@@ -2171,7 +2460,7 @@ let s=null;const $=id=>document.getElementById(id);const V=(x,a)=>typeof x==='fu
 const clamp=(k,v)=>LIM[k]?Math.max(LIM[k][0],Math.min(LIM[k][1],v)):v;const fr2=v=>{v=Math.round(v*100)/100;return v%1?v.toFixed(2):String(v)};
 const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');const pick=a=>a[Math.random()*a.length|0];
 function fresh(){return{hp:100,sila:1,avt:0,dusha:60,menty:0,rub:3,sem:50,lena:0,f:{},cur:'start',nick:'Лёша',stage:1,res:'',chap:'',day:7,slot:1,mode:'scene',ci:0,side:null,skips:0,skipPend:0,att:0,attN:0,bottles:0,btot:0,ev:[],evday:0,ach:{},used:{},bg:'train',loc:'tram',dt:'Сентябрь 1978',mlab:'Сентябрь 1978'}}
-function save(){try{localStorage.setItem('kf_vn',JSON.stringify(s))}catch(e){}checkAch()}
+function save(){try{localStorage.setItem('kf_vn',JSON.stringify(s))}catch(e){}checkAch();cloudSoon()}
 function loadSave(){try{return JSON.parse(localStorage.getItem('kf_vn'))}catch(e){return null}}
 function getEnds(){try{return JSON.parse(localStorage.getItem('kf_ends')||'{}')}catch(e){return{}}}
 function addEnd(id){try{const e=getEnds();e[id]=1;localStorage.setItem('kf_ends',JSON.stringify(e))}catch(e){}}
@@ -2281,34 +2570,34 @@ function draw(){const c=CV.c,g=CV.g;const dpr=Math.min(2,window.devicePixelRatio
  if(crowdOf()){const R=R_(9);crowd(g,W,H,H*.98,16,R,['#0e0b09','#1a1410'])}
  const D=sceneData();const sp=D.spk[Math.min(s.ci,D.ch.length-1)];const n=D.chars.length;const pos=[[.5],[.3,.7],[.2,.5,.8],[.13,.37,.63,.87]][n-1]||[];
  const ph=Math.min(H*.8,Math.max(W*(n>2?.42:.55),H*.5));D.chars.forEach((id,i)=>{const d=vdef(id,s.stage,season());const act=!sp||sp===id||sp==='hero';const x=W*pos[i],by=H*1.02+(act&&sp===id?0:H*.02);const breath=Math.sin(t*1.6+i)*H*.003;
-  g.save();if(sp&&sp!==id){g.filter='brightness(.78)'}person(g,x,by+breath,ph*(sp===id?1.03:1),d,false,i<n/2&&n>1);g.restore()})}
+  g.save();if(sp&&sp!==id){g.filter='brightness(.78)'}person(g,x,by+breath,ph*(sp===id?1.03:1),sp===id?Object.assign({},d,{emo:emoOf(D.ch[Math.min(s.ci,D.ch.length-1)])}):d,false,i<n/2&&n>1);g.restore()})}
 function loop(){try{draw()}catch(e){console.error(e)}requestAnimationFrame(loop)}
 // ---------- интерфейс ----------
 function renderHUD(){let h='';HUDS.forEach(([k,ic,n])=>{if(k==='lena'&&!s.f.lena_met)return;const v=s[k];const warn=(k==='hp'&&v<35)||(k==='menty'&&v>=60)||(k==='dusha'&&v<25);
  h+=`<span class="hs${warn?' warn':''}" title="${n}"><i>${ic}</i>${k==='rub'?fr2(v):v}</span>`});if(s.bottles)h+=`<span class="hs" title="Бутылки"><i>🍾</i>${s.bottles}</span>`;$('hud').innerHTML=h;
  $('clock').innerHTML=`<b>${DAYS[(s.day-1)%7]} · ${SLOTN[s.slot]}</b><span>${esc(s.mlab||'')}</span>`}
-function render(){renderHUD();document.body.dataset.mode=s.mode;
+function render(){renderHUD();document.body.dataset.mode=s.mode;sndScene(s.mode==='map'?'map':s.bg);
  if(s.mode==='map'){renderMap();$('vn').classList.remove('show');return}
- $('mapui').classList.remove('show');$('vn').classList.add('show');renderScene()}
+ $('mapui').classList.remove('show');$('vn').classList.add('show');renderScene();saveChap()}
 function renderScene(){const id=curId(),sc=S[id];const D=sceneData();const i=Math.min(s.ci,D.ch.length-1);let c=D.ch[i];const res=c[0]==='§';if(res)c=c.slice(1);
  const sp=D.spk[i];$('loc').innerHTML=`${sc.chap?'<b>'+esc(sc.chap)+'</b>':''}${sc.d?esc(V(sc.d)):''}`;if(sc.chap)s.chap=sc.chap;
  const nm=sp==='hero'?(s.nick||'Ты'):sp?((CH[sp]&&CH[sp].n)||''):'';$('nm').textContent=nm;$('nm').style.display=nm?'inline-block':'none';
- $('box').className=(sp?'say':'narr')+(res?' res':'');typeText(c);auPlay(c,D.ls[i]);
+ $('box').className=(sp?'say':'narr')+(res?' res':'');typeText(c);auPlay(c,D.ls[i]);if(CV.lastChunk!==c){CV.lastChunk=c;fxChunk(c)}
  const last=i>=D.ch.length-1;let h='';$('endc').innerHTML='';
- if(last&&sc.end){const e=sc.end;const ttl=V(e.title);if(e.kind!=='stage')addEnd(e.id);
+ if(last&&sc.end){const e=sc.end;const ttl=V(e.title);if(e.kind!=='stage')addEnd(e.id);if(CV.endSnd!==e.id){CV.endSnd=e.id;sfx(e.kind==='death'?'death':'good')}
   $('endc').innerHTML=`<div class="end ${e.kind==='good'?'good':e.kind==='stage'?'stage':''}"><div class="k">${e.kind==='death'?'Смерть':e.kind==='stage'?'Итог этапа':'Концовка'}</div><h2>${esc(ttl)}</h2></div>`;
-  if(sc.next)h+=`<button class="ch" onclick="goNext()">Этап II. Восьмидесятые →</button>`;else{if(s.undo&&e.kind==='death')h+=`<button class="ch" onclick="undo()">↺ Переиграть последний выбор</button>`;h+=`<button class="ch" onclick="newGame()">Начать заново</button><button class="ch" onclick="showEnds()">★ Все концовки</button>`}}
+  if(sc.next)h+=`<button class="ch" onclick="goNext()">Этап II. Восьмидесятые →</button>`;else{if(s.undo&&e.kind==='death')h+=lifeBtn();h+=`<button class="ch" onclick="shareEnd()">📤 Поделиться концовкой</button>`;h+=`<button class="ch" onclick="newGame()">Начать заново</button><button class="ch" onclick="showEnds()">★ Все концовки</button>`}}
  else if(last){vis(sc).forEach((c,j)=>{const k=rollKind(c);let hint='';if(k)hint=`<small>${{fight:'👊 мини-игра: драка',run:'🏃 мини-игра: бег',keeper:'🧤 мини-игра: вратарь',striker:'⚽ мини-игра: удар',pullup:'💪 мини-игра: подтягивания'}[k]||'🎲 '+(RN[c.roll.st]||'')} · шанс ~${chance(c)}%</small>`;h+=`<button class="ch" onclick="choose(${j})"><span class="n">${j+1}</span>${esc(c.t)}${hint}</button>`})}
  $('chs').innerHTML=h;$('chs').classList.toggle('show',last);$('arrow').style.display=last?'none':'block'}
 let TW={t:'',i:0,timer:null};
-function typeText(t){clearInterval(TW.timer);TW={t,i:0};const el=$('tx');el.textContent='';TW.timer=setInterval(()=>{TW.i+=2;el.textContent=TW.t.slice(0,TW.i);if(TW.i>=TW.t.length){clearInterval(TW.timer);TW.timer=null}},16)}
+function typeText(t){clearInterval(TW.timer);TW={t,i:0};const el=$('tx');el.textContent='';TW.timer=setInterval(()=>{TW.i+=SET.speed;el.textContent=TW.t.slice(0,TW.i);if(TW.i>=TW.t.length){clearInterval(TW.timer);TW.timer=null}},16)}
 // ---------- озвучка ----------
 const AU={on:true,auto:false,a:null,q:[],tok:0,miss:{}};try{const o=JSON.parse(localStorage.getItem('kf_audio')||'{}');if(o.on===false)AU.on=false;if(o.auto)AU.auto=true}catch(e){}
 function auSave(){try{localStorage.setItem('kf_audio',JSON.stringify({on:AU.on,auto:AU.auto}))}catch(e){}}
-function auStop(){AU.tok++;if(AU.a){AU.a.pause();AU.a=null}}
+function auStop(){AU.tok++;if(AU.a){AU.a.pause();AU.a=null}sndDuck(false)}
 function auPlay(chunk,sp){auStop();if(!AU.on)return;const tok=AU.tok;const q=vsegs(chunk,sp,s).map(([v,t])=>'audio/'+vhash(v,t)+'.mp3');let played=false;
- const next=()=>{if(tok!==AU.tok)return;const f=q.shift();if(!f){if(played&&AU.auto)setTimeout(()=>{if(tok===AU.tok&&s.mode==='scene')advance(true)},500);return}if(AU.miss[f]){next();return}
-  const a=new Audio(f);AU.a=a;a.onended=next;a.onerror=()=>{AU.miss[f]=1;next()};a.play().then(()=>{played=true}).catch(()=>{next()})};next()}
+ const next=()=>{if(tok!==AU.tok)return;const f=q.shift();if(!f){sndDuck(false);if(played&&AU.auto)setTimeout(()=>{if(tok===AU.tok&&s.mode==='scene')advance(true)},500);return}if(AU.miss[f]){next();return}
+  const a=new Audio(f);a.volume=SET.vol;AU.a=a;a.onended=next;a.onerror=()=>{AU.miss[f]=1;next()};a.play().then(()=>{played=true;sndDuck(true)}).catch(()=>{next()})};next()}
 function advance(fromAuto){if(TW.timer&&!fromAuto){clearInterval(TW.timer);TW.timer=null;$('tx').textContent=TW.t;return}if(TW.timer){clearInterval(TW.timer);TW.timer=null}const D=sceneData();if(s.ci<D.ch.length-1){s.ci++;renderScene()}}
 function renderMap(){const ui=$('mapui');ui.classList.add('show');const q=questInfo();let h='';
  const need=schoolNeed();
@@ -2367,12 +2656,12 @@ function showEnds(){const got=getEnds();const all=Object.values(S).filter(x=>x.e
  h+=`</ul><h3 style="margin-top:16px">ДОСТИЖЕНИЯ</h3><ul>`;ACH.forEach(a=>{const ok=s&&s.ach[a[0]];h+=`<li class="${ok?'':'no'}">🏆 ${ok?esc(a[1])+' — ':''}${esc(a[2])}</li>`});h+=`</ul><br><button class="btn" onclick="closeM()">Закрыть</button>`;$('modalIn').innerHTML=h;$('modal').style.display='flex'}
 function closeM(){$('modal').style.display='none'}
 function menu(){const st=s?`<div class="mst">${HUDS.map(([k,ic,n])=>`<div><i>${ic}</i> ${n}: <b>${k==='rub'?fr2(s[k]):s[k]}</b></div>`).join('')}<div>📅 День ${s.day} · прогулов: <b>${s.skips}</b></div></div>`:'';
- $('modalIn').innerHTML=`<h3>МЕНЮ</h3>${st}<div class="mbtns"><button class="btn big" onclick="closeM()">Продолжить</button><button class="btn" onclick="AU.on=!AU.on;auSave();if(!AU.on)auStop();menu()">${AU.on?'🔊 Озвучка: вкл':'🔇 Озвучка: выкл'}</button><button class="btn" onclick="AU.auto=!AU.auto;auSave();menu()">${AU.auto?'▶ Авточтение: вкл':'⏸ Авточтение: выкл'}</button><button class="btn" onclick="howto()">❔ Как играть</button><button class="btn" onclick="showEnds()">★ Концовки и достижения</button><button class="btn" onclick="closeM();$('title').style.display='flex';titleBtns()">⌂ Главное меню</button></div>`;$('modal').style.display='flex'}
-function howto(){$('modalIn').innerHTML=`<h3>КАК ИГРАТЬ</h3><div class="how"><p><b>История:</b> тапай по тексту или жми пробел — дальше. Выбор — кнопками или цифрами.</p><p><b>Карта района:</b> сверху всегда написано, какая <b>ЦЕЛЬ</b>. Жми «Идти ▶» — и событие начнётся, когда ты сам решишь. Красная «!» — сюжет, жёлтая «?» — что-то случилось.</p><p><b>Время:</b> утро → день → вечер → ночь. Почти любое дело занимает время. Спать — дома.</p><p>🔔 <b>Школа обязательна</b> утром с понедельника по субботу. Прогул — разборки дома.</p><p>👊 <b>Драки и погони</b> — мини-игры: лови момент удара или жми быстрее.</p><p>Качайся, ешь, собирай бутылки, помогай людям — или нет. Всё влияет на историю.</p></div><br><button class="btn big" onclick="closeM()">Понятно</button>`;$('modal').style.display='flex'}
-function titleBtns(){const sv=loadSave();let h='';if(sv&&S[sv.cur])h+=`<button class="btn big" onclick="cont()">Продолжить</button>`;h+=`<button class="btn big" onclick="newGame()">Новая игра</button><button class="btn" onclick="howto()">❔ Как играть</button><button class="btn" onclick="showEnds()">★ Концовки</button>`;$('tbtns').innerHTML=h}
+ $('modalIn').innerHTML=`<h3>МЕНЮ</h3>${st}<div class="mbtns"><button class="btn big" onclick="closeM()">Продолжить</button><button class="btn" onclick="account()">👤 ${NET.sess?esc(userNick())+' · ❤ '+NET.lives:'Аккаунт'}</button><button class="btn" onclick="shop()">🛒 Магазин</button><button class="btn" onclick="chapters()">📖 Главы</button><button class="btn" onclick="settings()">⚙ Настройки</button><button class="btn" onclick="howto()">❔ Как играть</button><button class="btn" onclick="showEnds()">★ Концовки и достижения</button><button class="btn" onclick="closeM();$('title').style.display='flex';titleBtns()">⌂ Главное меню</button></div>`;$('modal').style.display='flex'}
+function howto(){$('modalIn').innerHTML=`<h3>КАК ИГРАТЬ</h3><div class="how"><p><b>История:</b> тапай по тексту или жми пробел — дальше. Выбор — кнопками или цифрами.</p><p><b>Карта района:</b> сверху всегда написано, какая <b>ЦЕЛЬ</b>. Жми «Идти ▶» — и событие начнётся, когда ты сам решишь. Красная «!» — сюжет, жёлтая «?» — что-то случилось.</p><p><b>Время:</b> утро → день → вечер → ночь. Почти любое дело занимает время. Спать — дома.</p><p>🔔 <b>Школа обязательна</b> утром с понедельника по субботу. Прогул — разборки дома.</p><p>👊 <b>Драки и погони</b> — мини-игры: лови момент удара или жми быстрее.</p><p>Качайся, ешь, собирай бутылки, помогай людям — или нет. Всё влияет на историю.</p><p>✝ <b>Смерть</b> — это концовка. Если есть ❤ <b>жизнь</b>, можно вернуться к последнему выбору и сыграть иначе. Жизни — в магазине.</p><p>👤 <b>Аккаунт</b> сохраняет прогресс в облаке: продолжай на любом устройстве.</p></div><br><button class="btn big" onclick="closeM()">Понятно</button>`;$('modal').style.display='flex'}
+function titleBtns(){const sv=loadSave();let h='';if(sv&&S[sv.cur])h+=`<button class="btn big" onclick="cont()">Продолжить</button>`;h+=`<button class="btn big" onclick="newGame()">Новая игра</button><div class="trow"><button class="btn" onclick="account()">👤 ${NET.sess?esc(userNick()):'Аккаунт'}</button><button class="btn" onclick="shop()">🛒 Магазин</button></div><div class="trow"><button class="btn" onclick="howto()">❔ Как играть</button><button class="btn" onclick="settings()">⚙ Настройки</button></div><div class="trow"><button class="btn" onclick="chapters()">📖 Главы</button><button class="btn" onclick="showEnds()">★ Концовки</button></div><div class="trow"><button class="btn" onclick="sponsors()">🤝 Спонсоры</button></div><a class="btn tg" href="${TG_URL}" target="_blank" rel="noopener">✈ Наш Telegram — ${TG_NAME}</a>`;$('tbtns').innerHTML=h;sndScene('title')}
 // ---------- старт ----------
 CV.c=$('scr');CV.g=CV.c.getContext('2d');
-$('menub').onclick=menu;$('modal').onclick=e=>{if(e.target.id==='modal')closeM()};
+$('menub').onclick=menu;new MutationObserver(()=>sndMini($('mini').classList.contains('show'))).observe($('mini'),{attributes:true,attributeFilter:['class']});$('modal').onclick=e=>{if(e.target.id==='modal')closeM()};
 $('box').addEventListener('click',advance);$('scr').addEventListener('click',()=>{if(s&&s.mode==='scene')advance()});
 addEventListener('keydown',e=>{if(!s||$('title').style.display!=='none'||$('modal').style.display==='flex'||$('mini').classList.contains('show'))return;
  if(e.code==='Escape'){if($('sheet').classList.contains('show'))closeSheet();else menu();return}
