@@ -1845,6 +1845,136 @@ c:[{t:'Проводить. Не торопясь.',go:'__end',adv:60,fx:{lena:4}
 x_video:{side:1,d:'Видеосалон',t:`Видеосалон в подвале ДК. Сегодня «Кулак ярости» с Брюсом Ли. Билет — рубль.`,
 c:[{t:'Посмотреть.',req:s=>s.rub>=1,go:'__end',adv:120,fx:{rub:-1,hp:5},r:'Полтора часа гнусавого перевода и криков «кия!». Пацаны выходят из зала, размахивая руками. Ты тоже.'},{t:'Мимо.',go:'__end'}]}
 });
+// ===== ДОП: репутация, деньги, общак, новые выборы =====
+add({
+// --- общак ---
+x_obshak:{side:1,d:'Гаражи. Сборы',onEnter:s=>{s.obshDay=s.day},t:s=>`Шама обходит пацанов с кепкой. В кепке мелочь и пара мятых рублей.
+
+— Сборы, Сталик. На общак. Кого из наших закроют — передачки, адвокат. Сегодня ты скинулся, завтра за тебя скинутся.${s.rub<1?'\n\nУ тебя в кармане почти пусто.':''}`,
+c:[{t:'Скинуть рубль.',req:s=>s.rub>=1,go:'__end',fx:{rub:-1,avt:3,obsh:1},r:'Шама ссыпает рубль в кепку и одобрительно кивает.'},
+ {t:'Скинуть трёшку. Пусть видят.',req:s=>s.rub>=3,go:'__end',fx:{rub:-3,avt:7,obsh:3},r:'Шама поднимает бровь: трёшку тут не кидает никто. Рустему он точно расскажет.'},
+ {t:'«— Пустой я сегодня.»',go:'x_obshak_no'},
+ {t:'«— А куда эти деньги идут на самом деле?»',roll:{st:'avt',dc:14,ok:'x_obshak_q',no:'x_obshak_no'},h:'авторитет'}]},
+x_obshak_no:{side:1,fx:{avt:-5},t:`Шама смотрит долго, без улыбки.
+
+— Пустой, значит. Ладно. Только когда тебя прижмёт, ты тоже пустым окажешься. Для всех.
+
+Кабан за спиной хмыкает. Нехорошо хмыкает.`,c:[{t:'Уйти.',go:'__end'}]},
+x_obshak_q:{side:1,fx:{avt:4,dusha:2},t:`Шама на секунду теряется. Потом пожимает плечами.
+
+— Шкету мать на операцию возили, с общака платили. Бизону передачки носим. Остальное у Рустема. Хочешь — у него и спроси.
+
+Спрашивать у Рустема ты не хочешь. Но пацаны запомнили, что ты не побоялся спросить.`,
+c:[{t:'Скинуть рубль.',req:s=>s.rub>=1,go:'__end',fx:{rub:-1,avt:2,obsh:1}},{t:'Уйти.',go:'__end'}]},
+
+// --- мама и деньги ---
+x_mama:{side:1,d:'Кухня. Вечер',onEnter:s=>{s.f.mama_money=1},t:`Мама сидит на кухне над раскрытым кошельком и пересчитывает мелочь. Второй раз. Третий.
+
+— Таньке сапоги нужны, — говорит она, не поднимая головы. — Старые совсем прохудились. А до получки неделя.
+
+Она замечает тебя и быстро захлопывает кошелёк.
+
+— Иди, Лёш. Это не твоя забота.`,
+c:[{t:'Молча положить на стол два рубля.',req:s=>s.rub>=2,go:'x_mama_g',fx:{rub:-2}},
+ {t:'Отдать всё, что есть.',req:s=>s.rub>=4,go:'x_mama_all',fx:{rub:-99999}},
+ {t:'«— Я заработаю. На товарной грузчики нужны.»',go:'__end',fx:{sem:3},r:'Мама впервые за вечер улыбается и отправляет тебя делать уроки.'},
+ {t:'Уйти к себе.',go:'__end',fx:{sem:-2}}]},
+x_mama_g:{side:1,fx:{sem:8,dusha:3},f:['mama_helped'],t:`Мама смотрит на деньги, потом на тебя.
+
+— Откуда?
+
+— Заработал, — говоришь ты. — Честно.
+
+Она долго молчит. Потом убирает рубли в кошелёк и гладит тебя по голове, как маленького. Ты даже не уворачиваешься.
+
+Через два дня Танька носится по квартире в новых сапогах.`,c:[{t:'Дальше.',go:'__end'}]},
+x_mama_all:{side:1,fx:{sem:12,dusha:5},f:['mama_helped'],t:`Ты вытряхиваешь на стол всё: рубли, мелочь, даже пятак из потайного кармана джинсов.
+
+— Лёша… — мама закрывает рот ладонью.
+
+Вечером отец заходит к тебе в комнату, садится на край кровати и молча сжимает твоё плечо. Ничего не говорит. Ему и не надо.`,c:[{t:'Дальше.',go:'__end'}]},
+
+// --- долг Мосла ---
+x_loan:{side:1,d:'Двор',onEnter:s=>{s.loanAsk=s.day},t:`Мосол перехватывает тебя у подъезда. Мнётся, что для него совсем не похоже.
+
+— Сталик, выручи. Рубль до пятницы. Матери на лекарство не хватает. Верну, отвечаю.
+
+Шама говорил, что Мосол должен полдвора. Но сейчас вид у него не наглый, а потерянный.`,
+c:[{t:'Дать рубль.',req:s=>s.rub>=1,go:'__end',fx:{rub:-1,dusha:2},f:['lent'],r:'Мосол сжимает рубль в кулаке и обещает, что не забудет.'},
+ {t:'Дать трёшку. Чтоб наверняка хватило.',req:s=>s.rub>=3,go:'__end',fx:{rub:-3,dusha:4},f:['lent','lent3'],r:'Мосол смотрит на трёшку, как на икону, и клянётся вернуть всё до копейки.'},
+ {t:'«— Нету. Сам на нуле.»',go:'__end',f:['loan_done'],r:'Мосол кивает и уходит, ссутулившись.'}]},
+x_loanb:{side:1,d:'Двор',onEnter:s=>{s.f.loan_done=1;if(s.avt>=20||s.f.gang)s.f.loan_back=1},t:s=>s.f.loan_back?`Мосол сам находит тебя во дворе. Лезет в карман и протягивает деньги — мятые, но все до копейки. И сверху ещё.
+
+— Как обещал. С процентом. Матери полегче стало.
+
+Ты вспоминаешь слова Шамы про полдвора. Видно, не со всеми Мосол такой.`:`Мосол замечает тебя и сразу находит дела на другом конце двора. Неделя прошла. Потом ещё одна.
+
+Когда ты всё-таки ловишь его у гаражей, он разводит руками:
+
+— Нету пока, Сталик. Ну правда нету.`,
+c:[{t:'Взять деньги.',req:s=>s.f.loan_back&&!s.f.lent3,go:'__end',fx:{rub:1.5,avt:1}},
+ {t:'Взять деньги.',req:s=>s.f.loan_back&&s.f.lent3,go:'__end',fx:{rub:4,avt:2}},
+ {t:'«— Оставь. Матери купи что-нибудь.»',req:s=>s.f.loan_back,go:'__end',fx:{dusha:6,avt:3},r:'Мосол долго смотрит на тебя. Потом молча жмёт руку.'},
+ {t:'«— Ладно. Проехали.»',req:s=>!s.f.loan_back,go:'__end',fx:{dusha:2,avt:-2}},
+ {t:'Прижать его к гаражу.',req:s=>!s.f.loan_back,roll:{st:'sila',dc:9,ok:'x_loanb_w',no:'x_loanb_l'},h:'драка'}]},
+x_loanb_w:{side:1,fx:{avt:4,dusha:-4,rub:1},t:`Мосол бьётся спиной о гараж, лязгает железо.
+
+— Всё, всё! На, подавись!
+
+Он вытряхивает из кармана рубль. Больше у него нет. Вы оба знаете, что эти деньги были на лекарство.`,c:[{t:'Уйти.',go:'__end'}]},
+x_loanb_l:{side:1,fx:{hp:-10,avt:-3},t:`Мосол выше тебя на голову. Он отталкивает тебя так, что ты садишься в лужу.
+
+— Сказал же — нету!
+
+Денег ты больше не увидишь.`,c:[{t:'Уйти.',go:'__end'}]},
+
+// --- репутация в сюжете ---
+rm_rep:{fx:{avt:10},t:s=>`Шама замирает с семечкой у рта. Кабан косится на него. Мосол делает вид, что разглядывает снег.
+
+За эти недели про тебя слышали все: ${s.f.saved_gosha?'как ты вписался за Гошу, ':''}${s.f.box?'как ходишь к Палычу, ':''}как не прогибаешься. Бить такого при всех — себе дороже.
+
+— Борзый, — тянет Шама. Злости в голосе нет. Скорее интерес.
+
+И тут из темноты раздаются медленные хлопки.`,c:[{t:'Обернуться.',go:'rustem_offer'}]},
+g2_rep:{fx:{avt:4,dusha:6},f:['warned_vadik'],t:`Ты выходишь вперёд раньше, чем Шама успевает кивнуть Кабану.
+
+— Я сам с ним поговорю, — говоришь ты. — Отойдите.
+
+Пацаны переглядываются, но отходят. Тебе это можно.
+
+Ты отводишь Вадика за ларёк.
+
+— Через пять минут тебя здесь нет, — говоришь ты тихо. — И неделю на рынке не появляйся.
+
+Вадик исчезает. Шаме ты потом говоришь, что пугнул его как надо. Шама верит.`,c:[{t:'Дальше.',go:'g_home'}]},
+
+// --- новая концовка ---
+e_shod:{end:{id:'e_shod',title:'Сход',kind:'final'},t:s=>`Ты не берёшь ствол. Ты берёшь записную книжку.
+
+За неделю ты объезжаешь всех: Заречных, Пятаковских, ребят с Жилки и с Хади Такташа. С кем-то пьёшь чай, с кем-то просто стоишь молча у машины. Тебя слушают. Тебя знают по стенке, по слову, по тому, что ты ни разу никого не сдал.
+
+В субботу на пустыре за Казанкой собираются старшие со всех улиц. Рустем приезжает последним. Видит толпу и понимает всё без слов.
+
+— Ты чё творишь, Сталик?
+
+— Хватит, Рустем, — говоришь ты. — Улица устала хоронить пацанов.
+
+Сход решает: Рустем уходит из дел. Живым. А ты остаёшься. Не хозяином, а тем, к кому идут разводить споры, чтобы не было крови.
+
+${s.f.dinar_dead?'Динара это не вернёт. Ты помнишь о нём каждый день.':'Осенью Танька выходит за Динара. На свадьбе ты сидишь рядом с отцом.'}
+
+В девяностые в Казани будет много крови. На твоих улицах — чуть меньше. Это немного. Но это твоё.`}
+});
+S.rematch.c.splice(3,0,{t:'«— Шама, ты знаешь, кто я на районе. Не позорься.»',req:s=>s.avt>=35,go:'rm_rep'});
+S.g2.c.splice(2,0,{t:'«— Я сам с ним поговорю. Отойдите.»',req:s=>s.avt>=40,go:'g2_rep'});
+S.s2_sat.c.splice(2,0,{t:'Поднять руку. Тебя знают обе стороны.',req:s=>s.avt>=80,go:'s2_sat_stop'});
+S.s2_final_boss.c.splice(2,0,{t:'Собрать сход. Пусть решает улица, а не ствол.',req:s=>s.avt>=85&&s.dusha>=40,go:'e_shod'});
+S.x_gop.c.splice(1,0,{t:'«— В лицо меня не знаешь? Спроси у своих, кто такой Сталик.»',req:s=>s.avt>=60,go:'x_gop_ok'});
+S.x_kids.c.unshift({t:'Просто посмотреть на них.',req:s=>s.avt>=30,go:'x_kids_ok'});
+// новые мини-игры в сюжетных выборах
+S.s2_sat.c.forEach(c=>{if(c.h==='драка')c.h='стенка'});
+S.x_gop.c.forEach(c=>{if(c.h==='бег')c.h='дворы'});
+S.x_chika.c.forEach(c=>{if(c.h==='удача')c.h='чика'});
 </script><script>
 // ===== ПЕРСОНАЖИ =====
 const CH={
@@ -2160,7 +2290,7 @@ function person(g,x,by,h,d,dim,flip){const k=d.kid?.78:1;h*=k;const sw=h*(d.big?
  if(emo==='angry'){g.strokeStyle='rgba(160,40,30,.45)';g.lineWidth=r*.05;g.beginPath();g.moveTo(hx-r*.08,ey-r*.45);g.lineTo(hx-r*.02,ey-r*.33);g.moveTo(hx+r*.08,ey-r*.45);g.lineTo(hx+r*.02,ey-r*.33);g.stroke()}
  g.strokeStyle='rgba(120,60,40,.5)';g.lineWidth=r*.06;g.beginPath();g.moveTo(hx,ey+r*.05);g.lineTo(hx-r*.08,hy+r*.35);g.lineTo(hx+r*.06,hy+r*.38);g.stroke();
  if(d.mus){g.fillStyle=d.hair;g.fillRect(hx-r*.28,hy+r*.42,r*.56,r*.1)}
- if(d.scar){g.strokeStyle='#f2d8c8';g.lineWidth=r*.06;g.beginPath();g.moveTo(hx+r*.05,hy+r*.38);g.lineTo(hx+r*.2,hy+r*.75);g.stroke()}
+ if(d.scar){g.strokeStyle='#b5574a';g.lineWidth=r*.05;g.lineCap='round';g.beginPath();g.moveTo(hx+r*.36,hy-r*.42);g.lineTo(hx+r*.26,hy-r*.08);g.stroke();g.lineCap='butt'}
  if(d.glasses){g.strokeStyle='#222';g.lineWidth=r*.07;g.beginPath();g.arc(hx-r*.33,ey,r*.22,0,7);g.moveTo(hx+r*.55,ey);g.arc(hx+r*.33,ey,r*.22,0,7);g.moveTo(hx-r*.11,ey);g.lineTo(hx+r*.11,ey);g.stroke()}
  if(d.bandage){g.fillStyle='#f4f4f4';g.fillRect(hx-r*.9,hy-r*.55,r*1.8,r*.28);g.fillStyle='rgba(190,40,40,.6)';g.fillRect(hx+r*.3,hy-r*.52,r*.2,r*.2)}
  if(d.age){g.strokeStyle='rgba(90,50,30,.35)';g.lineWidth=r*.04;g.beginPath();g.moveTo(hx-r*.6,ey+r*.2);g.lineTo(hx-r*.45,ey+r*.3);g.moveTo(hx+r*.6,ey+r*.2);g.lineTo(hx+r*.45,ey+r*.3);g.stroke()}
@@ -2209,6 +2339,8 @@ function settings(){const sp=[['Медленно',1],['Обычно',2],['Быс
  <div class="srow"><span>🌆 Звуки фона</span><input type="range" min="0" max="100" value="${Math.round(SET.amb*100)}" oninput="SET.amb=this.value/100;sndVol();setSave()"></div>
  <div class="srow"><span>👊 Эффекты</span><input type="range" min="0" max="100" value="${Math.round(SET.sfx*100)}" oninput="SET.sfx=this.value/100;sndVol();setSave();sfx('hit')"></div>
  <div class="srow"><span>▶ Авточтение</span><button class="btn" onclick="AU.auto=!AU.auto;auSave();settings()">${AU.auto?'вкл':'выкл'}</button></div>
+ <div class="srow"><span>🎬 Заставки глав</span><button class="btn" onclick="SET.cuts=SET.cuts===0?1:0;setSave();settings()">${SET.cuts===0?'выкл':'вкл'}</button></div>
+ <div class="srow"><span>📼 Фильтр картинки</span>${owns('filters')?`<div class="seg">${[['Нет',''],['VHS','vhs'],['Плёнка','film']].map(([n,v])=>`<button class="btn ${(SET.flt||'')===v?'on':''}" onclick="SET.flt='${v}';setSave();applyFlt();settings()">${n}</button>`).join('')}</div>`:`<button class="btn" onclick="shop()">🔒 В магазине</button>`}</div>
  <div class="srow"><span>Скорость текста</span><div class="seg">${sp.map(([n,v])=>`<button class="btn ${SET.speed===v?'on':''}" onclick="SET.speed=${v};setSave();settings()">${n}</button>`).join('')}</div></div>
  </div><br><button class="btn big" onclick="closeM()">Готово</button>`;$('modal').style.display='flex'}
 
@@ -2271,16 +2403,17 @@ function logout(){NET.sess=null;NET.lives=0;NET.cloudAt=null;sessSave();toast('�
 function localStamp(){return+(localStorage.getItem('kf_ts')||0)}
 async function afterLogin(){await walletLoad();await cloudPull();titleBtns()}
 async function cloudPull(){if(!NET.sess)return;try{
- const rows=await api('/rest/v1/kf_saves?select=save,ends,chaps,updated_at&user_id=eq.'+NET.sess.user.id);const row=rows&&rows[0];
+ let rows;try{rows=await api('/rest/v1/kf_saves?select=save,ends,chaps'+(NET.noAch?'':',ach')+',updated_at&user_id=eq.'+NET.sess.user.id)}catch(e){if(!NET.noAch&&/\bach\b/.test(e.message||'')){NET.noAch=1;return cloudPull()}throw e}const row=rows&&rows[0];
  if(!row){await cloudPush();return}
  const ct=Date.parse(row.updated_at)||0;NET.cloudAt=ct;
  try{const e=getEnds();Object.assign(e,row.ends||{});localStorage.setItem('kf_ends',JSON.stringify(e))}catch(e){}
+ try{const g=getAchG();let n=0;for(const k in(row.ach||{}))if(!g[k]){g[k]=row.ach[k];n++}if(n)localStorage.setItem('kf_ach',JSON.stringify(g))}catch(e){}
  try{const ch=getChaps();for(const k in(row.chaps||{}))if(!ch[k])ch[k]=row.chaps[k];localStorage.setItem('kf_chaps',JSON.stringify(ch))}catch(e){}
  if(row.save&&S[row.save.cur]&&ct>localStamp()+2000){localStorage.setItem('kf_vn',JSON.stringify(row.save));localStorage.setItem('kf_ts',String(ct));toast('☁ Загружено сохранение из облака')}
  else if(localStamp()>ct+2000)await cloudPush()}catch(e){console.warn('cloud pull',e)}}
 async function cloudPush(manual){if(!NET.sess||!online())return;try{
- const sv=loadSave();const body={user_id:NET.sess.user.id,save:sv,ends:getEnds(),chaps:getChaps(),updated_at:new Date().toISOString()};
- await api('/rest/v1/kf_saves',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(body)});
+ const sv=loadSave();const body={user_id:NET.sess.user.id,save:sv,ends:getEnds(),chaps:getChaps(),updated_at:new Date().toISOString()};if(!NET.noAch)body.ach=getAchG();
+ try{await api('/rest/v1/kf_saves',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(body)})}catch(e){if(body.ach&&/\bach\b/.test(e.message||'')){NET.noAch=1;delete body.ach;await api('/rest/v1/kf_saves',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(body)})}else throw e}
  NET.cloudAt=Date.now();if(manual){toast('☁ Сохранено в облако');account()}}catch(e){if(manual)toast('☁ Не удалось: '+errRu(e.message));console.warn('cloud push',e)}}
 function cloudSoon(){try{localStorage.setItem('kf_ts',String(Date.now()))}catch(e){}if(!NET.sess)return;clearTimeout(NET.saveT);NET.saveT=setTimeout(cloudPush,4000)}
 window.addEventListener('pagehide',()=>{if(NET.sess&&NET.saveT){clearTimeout(NET.saveT);cloudPush()}});
@@ -2290,7 +2423,7 @@ async function fn(action,data){return api('/functions/v1/kf-shop',{method:'POST'
 async function walletLoad(){if(!NET.sess)return;try{const j=await fn('wallet');NET.lives=j.lives||0;NET.unlocks=j.unlocks||[]}catch(e){console.warn('wallet',e)}}
 function shop(){if(!online()){$('modalIn').innerHTML=`<h3>МАГАЗИН</h3><p class="mdesc">Магазин скоро откроется. Следи за новостями в <a href="${TG_URL}" target="_blank" rel="noopener">${TG_NAME}</a>.</p><br><button class="btn big" onclick="closeM()">Ок</button>`;$('modal').style.display='flex';return}
  $('modalIn').innerHTML=`<h3>МАГАЗИН</h3>${NET.sess?`<div class="mst"><div>👤 ${esc(userNick())}</div><div>❤ Жизней: <b>${NET.lives}</b></div></div>`:''}
- ${SHOP.map(it=>{const own=it.perm&&owns(it.id);return`<div class="sitem"><div class="sic">${it.ic}</div><div style="flex:1"><b>${esc(it.t)}</b><p>${esc(it.d)}</p>${own?`<div class="spr">✓ Куплено</div><button class="btn" onclick="chapters()">Открыть</button>`:`<div class="spr">${it.rub} ₽ · ${it.uah} грн</div>${NET.sess?`<div class="sbuy"><button class="btn" onclick="buy('donatello','${it.id}')">💳 Картой — ${it.uah} грн</button><button class="btn" onclick="buy('cryptobot','${it.id}')">🪙 Криптой — ${it.rub} ₽</button></div>`:''}`}</div></div>`}).join('')}
+ ${SHOP.map(it=>{const own=it.perm&&owns(it.id);return`<div class="sitem"><div class="sic">${it.ic}</div><div style="flex:1"><b>${esc(it.t)}</b><p>${esc(it.d)}</p>${own?`<div class="spr">✓ Куплено</div><button class="btn" onclick="${it.open||'chapters()'}">Открыть</button>`:`<div class="spr">${it.rub} ₽ · ${it.uah} грн</div>${NET.sess?`<div class="sbuy"><button class="btn" onclick="buy('donatello','${it.id}')">💳 Картой — ${it.uah} грн</button><button class="btn" onclick="buy('cryptobot','${it.id}')">🪙 Криптой — ${it.rub} ₽</button></div>`:''}`}</div></div>`}).join('')}
  ${NET.sess?'':`<p class="mdesc">Чтобы покупки сохранились, сначала войди в аккаунт.</p><div class="mbtns"><button class="btn big" onclick="account('in')">👤 Войти</button></div>`}
  <br><button class="btn" onclick="closeM()">Закрыть</button>`;$('modal').style.display='flex'}
 async function buy(prov,item){item=item||'life';const box=$('modalIn');box.innerHTML=`<h3>ОПЛАТА</h3><p class="mdesc">Создаю заказ…</p>`;
@@ -2387,6 +2520,11 @@ function sfx(k){if(!SND.ctx)return;const c=SND.ctx,t=c.currentTime,d=SND.fx;
  if(k==='click')burst(d,t,.02,2500,'bandpass',.15,3);
  if(k==='death'){tone(d,NOTE(45),t,3,'sawtooth',.12,.05,2);tone(d,NOTE(46),t,3,'sawtooth',.08,.05,2);tone(d,NOTE(81),t+.2,2.5,'sine',.08,.01,2)}
  if(k==='good'){[57,61,64,69].forEach((n,i)=>tone(d,NOTE(n),t+i*.12,2.2,'triangle',.08,.02,1.2))}
+ if(k==='paper'){burst(d,t,.25,1800,'bandpass',.35,1.2);burst(d,t+.18,.2,2600,'bandpass',.25,1.5)}
+ if(k==='radio'){burst(d,t,.9,3200,'bandpass',.18,.8);tone(d,1000,t+.95,.12,'sine',.06,.005,.08)}
+ if(k==='rankup'){[60,64,67,72].forEach((n,i)=>tone(d,NOTE(n),t+i*.09,.5,'square',.06,.005,.3))}
+ if(k==='rankdn'){[67,63,60].forEach((n,i)=>tone(d,NOTE(n),t+i*.12,.5,'triangle',.07,.01,.3))}
+ if(k==='ach'){[76,79,84,88].forEach((n,i)=>tone(d,NOTE(n),t+i*.07,.6,'triangle',.07,.005,.4))}
  if(k==='buy'){[72,76,79,84].forEach((n,i)=>tone(d,NOTE(n),t+i*.08,.4,'square',.05,.005,.2))}
 }
 // ---------- эмоции и тряска по тексту реплики ----------
@@ -2460,7 +2598,7 @@ const SC={sila:1,avt:.1,dusha:.1,sem:.1,lena:.1};const RN={sila:'сила',avt:'
 let s=null;const $=id=>document.getElementById(id);const V=(x,a)=>typeof x==='function'?x(s,a):x;
 const clamp=(k,v)=>LIM[k]?Math.max(LIM[k][0],Math.min(LIM[k][1],v)):v;const fr2=v=>{v=Math.round(v*100)/100;return v%1?v.toFixed(2):String(v)};
 const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');const pick=a=>a[Math.random()*a.length|0];
-function fresh(){return{hp:100,sila:1,avt:0,dusha:60,menty:0,rub:3,sem:50,lena:0,f:{},cur:'start',nick:'Лёша',stage:1,res:'',chap:'',day:7,slot:1,mode:'scene',ci:0,side:null,skips:0,skipPend:0,att:0,attN:0,bottles:0,btot:0,ev:[],evday:0,ach:{},used:{},bg:'train',loc:'tram',dt:'Сентябрь 1978',mlab:'Сентябрь 1978'}}
+function fresh(){return{hp:100,sila:1,avt:0,dusha:60,menty:0,rub:3,sem:50,lena:0,f:{},cur:'start',nick:'Лёша',stage:1,res:'',chap:'',day:7,slot:1,mode:'scene',ci:0,side:null,skips:0,skipPend:0,att:0,attN:0,bottles:0,btot:0,ev:[],evday:0,ach:{},fTrack:1,fights:0,obsh:0,used:{},bg:'train',loc:'tram',dt:'Сентябрь 1978',mlab:'Сентябрь 1978'}}
 function save(){try{localStorage.setItem('kf_vn',JSON.stringify(s))}catch(e){}checkAch();cloudSoon()}
 function loadSave(){try{return JSON.parse(localStorage.getItem('kf_vn'))}catch(e){return null}}
 function getEnds(){try{return JSON.parse(localStorage.getItem('kf_ends')||'{}')}catch(e){return{}}}
@@ -2495,9 +2633,10 @@ function inWin(w){if(!w)return true;if(w==='school')return s.slot===0&&schoolDay
 function curId(){return s.side||s.cur}
 function vis(sc){return(sc.c||[]).filter(c=>!c.req||c.req(s))}
 function chance(c){const b=Math.floor((s[c.roll.st]||0)*(SC[c.roll.st]||1));return Math.max(5,Math.min(95,Math.round((21-(c.roll.dc-b))/20*100)))}
-function rollKind(c){if(!c.roll)return null;if(['бег','реакция'].includes(c.h))return'run';if(c.h==='игра')return/ворот/i.test(c.t)?'keeper':'striker';if(c.h==='сила')return'pullup';if(c.roll.st==='sila')return'fight';return'dice'}
+function rollKind(c){if(!c.roll)return null;if(c.h==='стенка')return'wall';if(c.h==='дворы')return'yards';if(c.h==='чика')return'chika';if(['бег','реакция'].includes(c.h))return'run';if(c.h==='игра')return/ворот/i.test(c.t)?'keeper':'striker';if(c.h==='сила')return'pullup';if(c.roll.st==='sila')return'fight';return'dice'}
 function choose(i){if(CV.choosing||$('mini').classList.contains('show'))return;const id=curId(),sc=S[id];const c=vis(sc)[i];if(!c)return;const k=rollKind(c);if(k){CV.choosing=true;$('chs').classList.remove('show');setTimeout(()=>{CV.choosing=false},60000)}
- if(k==='fight')return miniFight(chance(c),c.h==='на смерть',ok=>apply(c,ok));if(k==='run')return miniRun(chance(c),ok=>apply(c,ok));
+ if(MINI2[k])return MINI2[k](chance(c),ok=>{if(ok)s[k+'W']=(s[k+'W']||0)+1;apply(c,ok)});
+ if(k==='fight'){s.fights=(s.fights||0)+1;return miniFight(chance(c),c.h==='на смерть',ok=>apply(c,ok))}if(k==='run')return miniRun(chance(c),ok=>apply(c,ok));
  if(k==='keeper')return miniKeeper(chance(c),ok=>apply(c,ok));
  if(k==='striker')return miniFight(chance(c),false,ok=>apply(c,ok),{t:'УДАР ПО ВОРОТАМ',s:'Бей, когда метка в зоне ворот. Нужно 2 гола из 3.',b:'⚽ УДАР',ok:'ГОЛ!',no:'МИМО',ic:'⚽'});
  if(k==='pullup')return miniRun(chance(c),ok=>apply(c,ok),{t:'ПОДТЯГИВАНИЯ',s:'Жми быстрее — тянись к турнику!',b:'💪 ТЯНИСЬ',ok:'ЗАЧЁТ',no:'СОРВАЛСЯ'});
@@ -2654,12 +2793,12 @@ function diceAnim(r,b,dc,cb){const el=$('mini');el.innerHTML=`<div class="mg"><d
 // ---------- меню ----------
 function showEnds(){const got=getEnds();const all=Object.values(S).filter(x=>x.end&&x.end.kind!=='stage');let h=`<h3>КОНЦОВКИ · ${all.filter(x=>got[x.end.id]).length}/${all.length}</h3><ul>`;
  all.forEach(x=>{const ok=got[x.end.id];const t=typeof x.end.title==='function'?'Поезд на юг / Один':x.end.title;h+=`<li class="${ok?'':'no'}">${x.end.kind==='death'?'✝':'★'} ${ok?esc(t):'??? ???'}</li>`});
- h+=`</ul><h3 style="margin-top:16px">ДОСТИЖЕНИЯ</h3><ul>`;ACH.forEach(a=>{const ok=s&&s.ach[a[0]];h+=`<li class="${ok?'':'no'}">🏆 ${ok?esc(a[1])+' — ':''}${esc(a[2])}</li>`});h+=`</ul><br><button class="btn" onclick="closeM()">Закрыть</button>`;$('modalIn').innerHTML=h;$('modal').style.display='flex'}
+ h+=`</ul><br><div class="mbtns"><button class="btn" onclick="achScreen()">🏆 Достижения</button><button class="btn" onclick="closeM()">Закрыть</button></div>`;$('modalIn').innerHTML=h;$('modal').style.display='flex'}
 function closeM(){$('modal').style.display='none'}
-function menu(){const st=s?`<div class="mst">${HUDS.map(([k,ic,n])=>`<div><i>${ic}</i> ${n}: <b>${k==='rub'?fr2(s[k]):s[k]}</b></div>`).join('')}<div>📅 День ${s.day} · прогулов: <b>${s.skips}</b></div></div>`:'';
- $('modalIn').innerHTML=`<h3>МЕНЮ</h3>${st}<div class="mbtns"><button class="btn big" onclick="closeM()">Продолжить</button><button class="btn" onclick="account()">👤 ${NET.sess?esc(userNick())+' · ❤ '+NET.lives:'Аккаунт'}</button><button class="btn" onclick="shop()">🛒 Магазин</button><button class="btn" onclick="chapters()">📖 Главы</button><button class="btn" onclick="settings()">⚙ Настройки</button><button class="btn" onclick="howto()">❔ Как играть</button><button class="btn" onclick="showEnds()">★ Концовки и достижения</button><button class="btn" onclick="closeM();$('title').style.display='flex';titleBtns()">⌂ Главное меню</button></div>`;$('modal').style.display='flex'}
-function howto(){$('modalIn').innerHTML=`<h3>КАК ИГРАТЬ</h3><div class="how"><p><b>История:</b> тапай по тексту или жми пробел — дальше. Выбор — кнопками или цифрами.</p><p><b>Карта района:</b> сверху всегда написано, какая <b>ЦЕЛЬ</b>. Жми «Идти ▶» — и событие начнётся, когда ты сам решишь. Красная «!» — сюжет, жёлтая «?» — что-то случилось.</p><p><b>Время:</b> утро → день → вечер → ночь. Почти любое дело занимает время. Спать — дома.</p><p>🔔 <b>Школа обязательна</b> утром с понедельника по субботу. Прогул — разборки дома.</p><p>👊 <b>Драки и погони</b> — мини-игры: лови момент удара или жми быстрее.</p><p>Качайся, ешь, собирай бутылки, помогай людям — или нет. Всё влияет на историю.</p><p>✝ <b>Смерть</b> — это концовка. Если есть ❤ <b>жизнь</b>, можно вернуться к последнему выбору и сыграть иначе. Жизни — в магазине.</p><p>👤 <b>Аккаунт</b> сохраняет прогресс в облаке: продолжай на любом устройстве.</p></div><br><button class="btn big" onclick="closeM()">Понятно</button>`;$('modal').style.display='flex'}
-function titleBtns(){const sv=loadSave();let h='';if(sv&&S[sv.cur])h+=`<button class="btn big" onclick="cont()">Продолжить</button>`;h+=`<button class="btn big" onclick="newGame()">Новая игра</button><div class="trow"><button class="btn" onclick="account()">👤 ${NET.sess?esc(userNick()):'Аккаунт'}</button><button class="btn" onclick="shop()">🛒 Магазин</button></div><div class="trow"><button class="btn" onclick="howto()">❔ Как играть</button><button class="btn" onclick="settings()">⚙ Настройки</button></div><div class="trow"><button class="btn" onclick="chapters()">📖 Главы</button><button class="btn" onclick="showEnds()">★ Концовки</button></div><div class="trow"><button class="btn" onclick="sponsors()">🤝 Спонсоры</button></div><a class="btn tg" href="${TG_URL}" target="_blank" rel="noopener">✈ Наш Telegram — ${TG_NAME}</a>`;$('tbtns').innerHTML=h;sndScene('title')}
+function menu(){const st=s?`<div class="mst">${HUDS.map(([k,ic,n])=>`<div><i>${ic}</i> ${n}: <b>${k==='rub'?fr2(s[k]):s[k]}</b></div>`).join('')}<div>🎖 На районе: <b>${rank(s)[0]}</b>${s.obsh?' · на общак: <b>'+fr2(s.obsh)+' ₽</b>':''}</div><div>📅 День ${s.day} · прогулов: <b>${s.skips}</b></div></div>`:'';
+ $('modalIn').innerHTML=`<h3>МЕНЮ</h3>${st}<div class="mbtns"><button class="btn big" onclick="closeM()">Продолжить</button><button class="btn" onclick="account()">👤 ${NET.sess?esc(userNick())+' · ❤ '+NET.lives:'Аккаунт'}</button><button class="btn" onclick="shop()">🛒 Магазин</button><button class="btn" onclick="chapters()">📖 Главы</button><button class="btn" onclick="settings()">⚙ Настройки</button><button class="btn" onclick="howto()">❔ Как играть</button><button class="btn" onclick="showEnds()">★ Концовки</button><button class="btn" onclick="achScreen()">🏆 Достижения</button><button class="btn" onclick="closeM();$('title').style.display='flex';titleBtns()">⌂ Главное меню</button></div>`;$('modal').style.display='flex'}
+function howto(){$('modalIn').innerHTML=`<h3>КАК ИГРАТЬ</h3><div class="how"><p><b>История:</b> тапай по тексту или жми пробел — дальше. Выбор — кнопками или цифрами.</p><p><b>Карта района:</b> сверху всегда написано, какая <b>ЦЕЛЬ</b>. Жми «Идти ▶» — и событие начнётся, когда ты сам решишь. Красная «!» — сюжет, жёлтая «?» — что-то случилось.</p><p><b>Время:</b> утро → день → вечер → ночь. Почти любое дело занимает время. Спать — дома.</p><p>🔔 <b>Школа обязательна</b> утром с понедельника по субботу. Прогул — разборки дома.</p><p>👊 <b>Драки и погони</b> — мини-игры: лови момент удара или жми быстрее.</p><p>🎖 <b>Авторитет</b> — твоё место на районе: от чушпана до старшего. Высокий авторитет открывает новые ответы в разговорах и даже отдельную концовку.</p><p>₽ <b>Деньги</b> — сборы на общак, долги, помощь семье. Каждый рубль — тоже выбор.</p><p>🏆 <b>Достижения</b> общие на все прохождения.</p><p>Качайся, ешь, собирай бутылки, помогай людям — или нет. Всё влияет на историю.</p><p>✝ <b>Смерть</b> — это концовка. Если есть ❤ <b>жизнь</b>, можно вернуться к последнему выбору и сыграть иначе. Жизни — в магазине.</p><p>👤 <b>Аккаунт</b> сохраняет прогресс в облаке: продолжай на любом устройстве.</p></div><br><button class="btn big" onclick="closeM()">Понятно</button>`;$('modal').style.display='flex'}
+function titleBtns(){const sv=loadSave();let h='';if(sv&&S[sv.cur])h+=`<button class="btn big" onclick="cont()">Продолжить</button>`;h+=`<button class="btn big" onclick="newGame()">Новая игра</button><div class="trow"><button class="btn" onclick="account()">👤 ${NET.sess?esc(userNick()):'Аккаунт'}</button><button class="btn" onclick="shop()">🛒 Магазин</button></div><div class="trow"><button class="btn" onclick="howto()">❔ Как играть</button><button class="btn" onclick="settings()">⚙ Настройки</button></div><div class="trow"><button class="btn" onclick="chapters()">📖 Главы</button><button class="btn" onclick="showEnds()">★ Концовки</button></div><div class="trow"><button class="btn" onclick="achScreen()">🏆 Достижения</button><button class="btn" onclick="sponsors()">🤝 Спонсоры</button></div><a class="btn tg" href="${TG_URL}" target="_blank" rel="noopener">✈ Наш Telegram — ${TG_NAME}</a>`;$('tbtns').innerHTML=h;sndScene('title')}
 // ---------- старт ----------
 CV.c=$('scr');CV.g=CV.c.getContext('2d');
 $('menub').onclick=menu;new MutationObserver(()=>sndMini($('mini').classList.contains('show'))).observe($('mini'),{attributes:true,attributeFilter:['class']});$('modal').onclick=e=>{if(e.target.id==='modal')closeM()};
@@ -2671,4 +2810,175 @@ addEventListener('keydown',e=>{if(!s||$('title').style.display!=='none'||$('moda
  else if(e.code==='Enter'||e.code==='KeyE'){const q=questInfo();if(q)openSheet(q.node)}});
 addEventListener('resize',()=>{CV.cache={}});
 titleBtns();requestAnimationFrame(loop);
+// ===== ДОП-СИСТЕМЫ: звания, деньги, мини-игры, достижения, заставки, фильтры =====
+Object.assign(SN,{rm_rep:'G',g2_rep:['shama','kaban','vadik'],e_shod:['rustem','gvozd','shama','kaban']});
+Object.assign(PL,{e_shod:'pustyr*'});
+Object.assign(SIDECH,{x_obshak:'shama',x_mama:'mother',x_loan:'mosol'});
+
+// ---------- звание на районе ----------
+function rank(st){st=st||s;const a=st.avt||0,g=st.f&&st.f.gang;
+ if(g)return a>=70?['Старший',4]:a>=45?['Молодой',3]:a>=20?['Супер',2]:['Скорлупа',1];
+ return a<=-15?['Чушпан',0]:a>=60?['Уважаемый',3]:a>=25?['Свой на районе',2]:['Новенький',1]}
+function rankCheck(){if(!s)return;const[r,n]=rank(s);if(s.rk&&s.rk!==r){const d=n-(s.rkN||0);setTimeout(()=>{toast((d>0?'⬆ ':d<0?'⬇ ':'🎖 ')+'На районе ты теперь: '+r);sfx(d<0?'rankdn':'rankup')},900)}s.rk=r;s.rkN=n}
+const _renderHUD=renderHUD;renderHUD=function(){_renderHUD();if(!s)return;const el=$('hud');if(!el)return;const d=document.createElement('div');d.className='hs rk';d.title='Положение на улице';d.textContent='🎖 '+rank(s)[0];el.appendChild(d)};
+const _renderScene=renderScene;renderScene=function(){_renderScene();const e=$('endc');if(e&&e.firstChild&&!e.querySelector('.endx')&&s){const d=document.createElement('div');d.className='endx';
+ d.innerHTML=`🎖 На районе: <b>${esc(rank(s)[0])}</b> · ★ ${s.avt} · ₽ ${fr2(s.rub)}${s.obsh?` · на общак: ${fr2(s.obsh)} ₽`:''}`;e.firstChild.appendChild(d)}};
+
+// ---------- деньги: новые траты и события ----------
+ACT.bakery.push({t:'Купить Таньке «Мишку на Севере» (50 коп.)',c:s=>s.stage===1&&s.rub>=.5&&!s.used.candy,cost:0,f:s=>{once('candy');return[{rub:-.5,sem:4},'Танька прячет конфету под подушку «на потом» и съедает её через пять минут.']}});
+ACT.tram.push({t:'Жвачка «Turbo» у фарцовщика (1 ₽)',c:s=>s.rub>=1&&!s.used.gum,cost:0,f:s=>{once('gum');return[{rub:-1,avt:2},pick(['Вкладыш с «Феррари». Во дворе это валюта посерьёзнее рубля.','Вкладыш с «Ламборгини». Шкет смотрит на тебя, как на космонавта.'])]}});
+ACT.post.push({t:'Купить Лене открытку (20 коп.)',c:s=>s.stage===1&&s.lena>=10&&s.rub>=.2&&!s.used.card,cost:0,f:s=>{once('card');return[{rub:-.2,lena:3},'Открытка с видом Кремля. Подписываешь три раза и три раза зачёркиваешь. В итоге пишешь просто: «Лене».']}});
+ACT.garages.push({t:'Сыграть в чику',c:s=>s.slot>=1&&s.slot<=2&&!s.used.chika,cost:1,side:'x_chika',pre:s=>once('chika')});
+WEV.push({id:'x_obshak',n:'garages',sl:[2],st:[1],c:s=>s.f.gang&&s.day-(s.obshDay||-99)>=4},
+ {id:'x_mama',n:'home',sl:[2,3],st:[1],c:s=>!s.f.mama_money&&s.day>=9},
+ {id:'x_loan',n:'yard',sl:[1,2],st:[1],c:s=>!s.loanAsk&&!s.f.loan_done},
+ {id:'x_loanb',n:'yard',sl:[1,2],st:[1],c:s=>s.f.lent&&!s.f.loan_done&&s.day>=(s.loanAsk||0)+3});
+Object.assign(EVT,{x_obshak:'Сборы на общак',x_mama:'Мама считает деньги',x_loan:'Мосол что-то мнётся',x_loanb:'Мосол и долг'});
+
+// ---------- мини-игры ----------
+function mgEnd(el,ok,t,cb,kd){document.removeEventListener('keydown',kd);el.innerHTML=`<div class="mg"><div class="mt ${ok?'ok':'no'}">${t}</div></div>`;setTimeout(()=>{el.classList.remove('show');cb(ok)},900)}
+// стенка на стенку: ритм
+function miniWall(ch,cb){const N=8,need=5,win=.11+ch/100*.09,el=$('mini');const notes=[];let tt=1.4;
+ for(let i=0;i<N;i++){notes.push({t:tt,k:Math.random()<.4?'b':'h',st:0});tt+=.6+Math.random()*.4}
+ el.innerHTML=`<div class="mg"><div class="mt">СТЕНКА НА СТЕНКУ</div><div class="ms">Когда знак доходит до черты: 👊 — <b>бей</b> (D / → / пробел), 🛡 — <b>блок</b> (A / ←). Нужно ${need} из ${N}.</div>
+ <div class="trk"><div class="hl"></div></div><div id="mhp"></div><div class="kb"><button class="btn big" data-k="b">🛡 БЛОК</button><button class="btn big" data-k="h">👊 УДАР</button></div></div>`;el.classList.add('show');
+ const T=el.querySelector('.trk');notes.forEach(n=>{n.el=document.createElement('div');n.el.className='nt';n.el.textContent=n.k==='h'?'👊':'🛡';T.appendChild(n.el)});
+ let hits=0,miss=0,run=true;const t0=performance.now();const now=()=>(performance.now()-t0)/1000;
+ const upd=()=>{$('mhp').innerHTML='✊'.repeat(hits)+'✖'.repeat(miss)+'·'.repeat(Math.max(0,N-hits-miss))};upd();
+ const res=(n,ok)=>{n.st=ok?1:2;n.el.classList.add(ok?'ok':'no');if(ok){hits++;CV.shake=.7;sfx('hit')}else miss++;upd();
+  if(hits>=need||miss>N-need||hits+miss>=N){run=false;setTimeout(()=>mgEnd(el,hits>=need,hits>=need?'ВЫСТОЯЛИ':'СМЯЛИ',cb,kd),400)}};
+ const tick=()=>{if(!run)return;const t=now();notes.forEach(n=>{if(n.st)return;const x=18+(n.t-t)*38;n.el.style.left=x+'%';n.el.style.opacity=x>100?0:1;if(t-n.t>win)res(n,false)});requestAnimationFrame(tick)};requestAnimationFrame(tick);
+ const press=k=>{if(!run)return;const t=now();const n=notes.find(n=>!n.st&&Math.abs(n.t-t)<=win);if(!n){T.classList.add('wh');setTimeout(()=>T.classList.remove('wh'),120);return}res(n,n.k===k)};
+ const kd=e=>{if(e.repeat)return;const m={KeyD:'h',ArrowRight:'h',Space:'h',KeyL:'h',Enter:'h',KeyA:'b',ArrowLeft:'b',KeyJ:'b',KeyS:'b',ArrowDown:'b'}[e.code];if(m){e.preventDefault();press(m)}};document.addEventListener('keydown',kd);
+ el.querySelectorAll('.kb button').forEach(b=>b.onpointerdown=e=>{e.preventDefault();press(b.dataset.k)})}
+// побег дворами: запомни, где опасно
+function miniYards(ch,cb){const el=$('mini');const DOORS=[['🏚','Арка'],['🧱','Забор'],['🚪','Подъезд']],DNG=['🚨','🐕','👥'];const need=3,lim=2,show=Math.max(420,850-ch*4),T=1.4+ch/100*1.6;
+ let ok=0,bad=0,safe=0,armed=false,run=true,tm=null,t0=0,r=0;
+ el.innerHTML=`<div class="mg"><div class="mt">ЧЕРЕЗ ДВОРЫ</div><div class="ms">Смотри, где опасно, — и беги в свободный проход. <b>A / ← · W / ↑ · D / →</b>. Нужно уйти ${need} раза.</div>
+ <div class="yd">${DOORS.map((d,i)=>`<button class="yb" data-z="${i}"><span class="yi">${d[0]}</span><span class="yn">${d[1]}</span><span class="yx"></span></button>`).join('')}</div><div class="bar"><div class="fill"></div></div><div id="mhp"></div><div class="ms" id="ymsg">Бежишь…</div></div>`;el.classList.add('show');
+ const B=[...el.querySelectorAll('.yb')],F=el.querySelector('.fill'),M=$('ymsg');const upd=()=>{$('mhp').innerHTML='🏃'.repeat(ok)+'✖'.repeat(bad)};upd();
+ const round=()=>{if(!run)return;r++;safe=Math.random()*3|0;armed=false;B.forEach((b,i)=>{b.className='yb';b.querySelector('.yx').textContent=i===safe?'':pick(DNG);if(i!==safe)b.classList.add('dg')});M.textContent='Двор '+r+'. Смотри!';F.style.width='100%';
+  tm=setTimeout(()=>{B.forEach(b=>{b.classList.remove('dg');b.querySelector('.yx').textContent='?'});armed=true;t0=performance.now();M.textContent='Куда?!';tick()},show)};
+ const tick=()=>{if(!armed||!run)return;const left=1-(performance.now()-t0)/1000/T;F.style.width=Math.max(0,left*100)+'%';if(left<=0){pickZ(-1);return}requestAnimationFrame(tick)};
+ const pickZ=z=>{if(!armed||!run)return;armed=false;const good=z===safe;if(good){ok++;sfx('whoosh');M.textContent='Проскочил!'}else{bad++;CV.shake=.5;M.textContent=z<0?'Замешкался!':'Тупик!'}
+  B.forEach((b,i)=>{b.querySelector('.yx').textContent=i===safe?'✔':'';if(i===z)b.classList.add(good?'ok':'no')});upd();
+  if(ok>=need||bad>=lim){run=false;setTimeout(()=>mgEnd(el,ok>=need,ok>=need?'УШЁЛ ДВОРАМИ':'ЗАГНАЛИ',cb,kd),650)}else setTimeout(round,750)};
+ const kd=e=>{const m={KeyA:0,ArrowLeft:0,KeyW:1,ArrowUp:1,KeyS:1,KeyD:2,ArrowRight:2}[e.code];if(m!==undefined){e.preventDefault();pickZ(m)}};document.addEventListener('keydown',kd);
+ B.forEach(b=>b.onpointerdown=e=>{e.preventDefault();pickZ(+b.dataset.z)});setTimeout(round,500)}
+// чика: сила удара битой
+function miniChika(ch,cb){const el=$('mini');const zone=.1+ch/100*.14;let p=0,dir=1,run=true,last=performance.now();const zc=.55+Math.random()*.3;
+ el.innerHTML=`<div class="mg"><div class="mt">ЧИКА</div><div class="ms">Бей битой по стопке, когда сила в зелёной зоне. Перевернёшь 3 монеты из 5 орлом — кон твой.</div>
+ <div class="coins">${'<span>🪙</span>'.repeat(5)}</div><div class="bar pw"><div class="zone"></div><div class="ptr"></div></div><button class="btn big hit">🏏 БИТА</button></div>`;el.classList.add('show');
+ const Z=el.querySelector('.zone'),P=el.querySelector('.ptr');Z.style.left=((zc-zone/2)*100)+'%';Z.style.width=(zone*100)+'%';
+ const tick=n=>{if(!run)return;const dt=(n-last)/1000;last=n;p+=dir*dt*1.5;if(p>1){p=1;dir=-1}if(p<0){p=0;dir=1}P.style.left=(p*100)+'%';requestAnimationFrame(tick)};requestAnimationFrame(tick);
+ const hit=()=>{if(!run)return;run=false;const q=Math.max(0,1-Math.abs(p-zc)/(zone*1.6));let fl=Math.min(5,Math.round(q*5+(Math.random()-.5)));if(Math.abs(p-zc)<=zone/2)fl=Math.max(fl,3);
+  const C=[...el.querySelectorAll('.coins span')];sfx('coin');C.forEach((c,i)=>setTimeout(()=>{c.classList.add('fl');c.textContent=i<fl?'🦅':'⚪'},120+i*130));
+  setTimeout(()=>mgEnd(el,fl>=3,fl>=3?'ОРЁЛ! '+fl+' из 5':'РЕШКА… '+fl+' из 5',cb,kd),1100)};
+ const kd=e=>{if(e.code==='Space'||e.code==='Enter'||e.code==='KeyE'){e.preventDefault();hit()}};document.addEventListener('keydown',kd);el.querySelector('.hit').onclick=hit;el.querySelector('.bar').onclick=hit}
+const MINI2={wall:miniWall,yards:miniYards,chika:miniChika};
+
+// ---------- достижения (общие на все прохождения) ----------
+function getAchG(){try{return JSON.parse(localStorage.getItem('kf_ach')||'{}')}catch(e){return{}}}
+const dN=E=>Object.keys(E).filter(k=>k[0]==='d').length,eN=E=>Object.keys(E).filter(k=>k[0]==='e').length;
+ACH.push(['gang','Пришился','Стать своим в Тяп-Ляпе',s=>s.f.gang],['solo','Сам по себе','Отказать Рустему',s=>s.f.solo],
+ ['starshiy','Старший','Дорасти до старшего',s=>rank(s)[0]==='Старший'],['chushpan','Чушпан','Упасть на самое дно авторитета',s=>s.avt<=-15],
+ ['obshak','На общее','Скинуть на общак 5 ₽ за одно прохождение',s=>(s.obsh||0)>=5],['mama','Кормилец','Помочь маме деньгами',s=>s.f.mama_helped],
+ ['loan','Слово пацана','Дать Мослу в долг и получить обратно',s=>s.f.loan_back&&s.f.lent],['chika','Король чики','Выиграть в чику 3 раза',s=>(s.chikaW||0)>=3],
+ ['wall','Стенка','Выстоять в стенке на стенку',s=>(s.wallW||0)>=1],['yards','Знаю каждый двор','Уйти от чужих через дворы',s=>(s.yardsW||0)>=1],
+ ['pacifist','Без кулаков','Дожить до 1987-го, ни разу не полезв в драку',s=>s.fTrack&&s.stage===2&&!s.fights],
+ ['family','Семья','Поднять «Семью» до 90',s=>s.sem>=90],['lena','Первая любовь','Поднять «Лену» до 80',s=>s.lena>=80],
+ ['end1','Финал','Дойти до любой концовки',(s,E)=>eN(E)>=1],['end5','Пять дорог','Открыть 5 разных концовок',(s,E)=>eN(E)>=5],
+ ['death3','Три жизни','Погибнуть тремя разными способами',(s,E)=>dN(E)>=3],['shod','Сход','Закончить войну без крови',(s,E)=>!!E.e_shod]);
+checkAch=function(){if(!s)return;rankCheck();const g=getAchG(),E=getEnds();let ch=0,q=0;
+ ACH.forEach(a=>{let ok=false;try{ok=!!a[3](s,E)}catch(e){}if(!ok)return;if(!s.ach[a[0]])s.ach[a[0]]=1;if(g[a[0]])return;g[a[0]]=Date.now();ch++;
+  const k=q++;setTimeout(()=>{toast('🏆 Достижение: «'+a[1]+'»');sfx('ach')},600+k*2200)});
+ if(ch)try{localStorage.setItem('kf_ach',JSON.stringify(g))}catch(e){}};
+(function(){try{const sv=loadSave();if(sv&&sv.ach){const g=getAchG();let n=0;for(const k in sv.ach)if(!g[k]){g[k]=Date.now();n++}if(n)localStorage.setItem('kf_ach',JSON.stringify(g))}}catch(e){}})();
+const _addEnd=addEnd;addEnd=function(id){_addEnd(id);setTimeout(checkAch,300)};
+function achScreen(){const g=getAchG(),n=ACH.filter(a=>g[a[0]]).length;
+ let h=`<h3>ДОСТИЖЕНИЯ · ${n}/${ACH.length}</h3><div class="achbar"><i style="width:${n/ACH.length*100}%"></i></div><p class="mdesc">Достижения общие на все прохождения${NET.sess?' и хранятся в облаке':''}.</p><ul class="achl">`;
+ ACH.forEach(a=>{const ok=g[a[0]];h+=`<li class="${ok?'':'no'}"><span>${ok?'🏆':'🔒'}</span><div><b>${esc(a[1])}</b><small>${esc(a[2])}</small></div></li>`});
+ $('modalIn').innerHTML=h+`</ul><br><button class="btn" onclick="closeM()">Закрыть</button>`;$('modal').style.display='flex'}
+
+// ---------- заставки между главами ----------
+const CUTS={
+'Этап I · Глава 1. Новенький':{k:'paper',dt:'Сентябрь 1978',h:'Заводу — новые кадры',b:'На завод «Теплоконтроль» прибывают молодые специалисты из Волгограда, Куйбышева и Горького. Семьям обещаны квартиры в новых домах на окраине города.',n:'ПРОИСШЕСТВИЯ. В районе новостроек подросток доставлен в больницу после драки «двор на двор». Милиция просит родителей знать, где их дети вечером.'},
+'Глава 2. Школа':{k:'radio',t:'Говорит Казань. В школах города проходят родительские собрания. Участковые инспекторы напоминают: после двадцати двух часов несовершеннолетним без взрослых на улице делать нечего. Берегите детей, товарищи.'},
+'Глава 3. Пришиться':{k:'paper',dt:'Ноябрь 1978',h:'Хулиганство — не молодечество',b:'Всё чаще подростки сбиваются в группы по месту жительства и называют себя «улицами». Носят одинаковые шапки, ходят «стенкой». Слово «пришиться» знает каждый второй восьмиклассник.',n:'ПОГОДА. В Казани выпал первый снег. Ночью до минус восьми.'},
+'Глава 4. Скорлупа':{k:'radio',t:'Добрый вечер, дорогие радиослушатели. До Нового, тысяча девятьсот семьдесят девятого года остаются считанные дни. Во Дворце культуры — новогодний вечер для молодёжи. Вход по пригласительным. Танцы до двадцати трёх часов.'},
+'Глава 4. Сам по себе':{k:'radio',t:'Добрый вечер, дорогие радиослушатели. До Нового, тысяча девятьсот семьдесят девятого года остаются считанные дни. Во Дворце культуры — новогодний вечер для молодёжи. Вход по пригласительным. Танцы до двадцати трёх часов.'},
+'Глава 5. Пробежка':{k:'paper',dt:'Весна 1979',h:'«Пробежки» надо остановить',b:'Толпы подростков до сотни человек проходят через чужие районы, сметая всех на пути. Прохожие называют это «пробежкой». Милиция задержала сорок участников, большинству нет шестнадцати.',n:'ОБЪЯВЛЕНИЕ. Секция бокса при ДК набирает мальчиков 12–16 лет. Тренер — мастер спорта.'},
+'Глава 6. Облава':{k:'radio',t:'Сводка городского управления внутренних дел. За прошедшую неделю изъято холодное оружие, обрезки труб, самодельные кастеты. Проводятся проверки подвалов и гаражей. Граждан, располагающих сведениями, просят обратиться в ближайшее отделение милиции.'},
+'Глава 7. Суд':{k:'paper',dt:'Лето 1979',h:'Суд идёт',b:'В районном суде слушается дело группы подростков. Скамья подсудимых не вмещает всех. Матери в коридоре плачут, отцы молчат. Свидетели путаются в показаниях — или боятся.',n:'КОРОТКО. Выпускные вечера в школах прошли спокойно. Почти везде.'},
+'Этап II · Глава 1. Возвращение':{k:'radio',t:'Говорит Казань. Тысяча девятьсот восемьдесят седьмой. Перестройка, ускорение, гласность. В городе открываются первые кооперативы: кафе, видеосалоны, ремонт обуви. В видеосалоне ДК — новый фильм. Сеанс в двадцать ноль-ноль, билет — рубль.'},
+'Глава 2. Кооператор':{k:'paper',dt:'Июнь 1987',h:'Кооператив — дело честное?',b:'Кооператоров в городе уже десятки. Деньги у них водятся, и это знают не только налоговые инспекторы. Владельцы ларьков жалуются: к ним приходят «спортсмены» и предлагают «защиту».',n:'РЕКЛАМА. Кафе «Ветерок» — шашлык, пиво, музыка. Ждём вас!'},
+'Глава 3. Стенка':{k:'radio',t:'Срочное сообщение. В субботу на пустыре за Казанкой ожидается массовая драка подростковых группировок. Родителей просят не отпускать детей из дома. На место будут направлены наряды милиции.'},
+'Глава 4. Новые правила':{k:'paper',dt:'1987',h:'Казанский феномен',b:'Так в столичных газетах называют то, что происходит на наших улицах. Группировки делят город, как карту. Те, кто вчера дрался за двор, сегодня собирают дань с рынков и кафе.',n:'ПИСЬМО В РЕДАКЦИЮ. «Мой сын ушёл вечером и не вернулся. Помогите». Подпись: мать.'},
+'Глава 5. Свидетель':{k:'radio',t:'Сводка прокуратуры. Следствие по делу о бандитизме продолжается. Свидетели отказываются давать показания: боятся. Прокуратура гарантирует защиту каждому, кто решится заговорить.'},
+'Глава 5. Хозяин':{k:'paper',dt:'1988',h:'Кто хозяин города?',b:'Днём в городе работают исполком и милиция. Вечером в «Ветерке» решаются другие дела. Горожане давно знают, к кому идти, если украли машину. И это не милиция.',n:'НЕКРОЛОГ. Коллектив завода «Теплоконтроль» скорбит о молодом сотруднике, погибшем в результате несчастного случая.'}};
+let CUT=null;
+function maybeCut(){if(!s||s.side||s.mode!=='scene'||s.ci!==0||SET.cuts===0||CUT||$('mini').classList.contains('show')||$('modal').style.display==='flex')return;if($('title').style.display!=='none'&&$('title').style.display!=='')return;
+ const sc=S[s.cur];if(!sc||!sc.chap)return;const c=CUTS[sc.chap];if(!c)return;s.cuts=s.cuts||{};if(s.cuts[sc.chap])return;s.cuts[sc.chap]=1;try{localStorage.setItem('kf_vn',JSON.stringify(s))}catch(e){}showCut(c)}
+function showCut(c){auStop();const d=document.createElement('div');d.id='cut';d.className='cut k-'+c.k;
+ d.innerHTML=c.k==='paper'?`<div class="paper"><div class="mh">ВЕЧЕРНИЙ ГОРОД</div><div class="pd"><span>Казань</span><span>${esc(c.dt)}</span><span>Цена 2 коп.</span></div><h2>${esc(c.h)}</h2><p>${esc(c.b)}</p><div class="nb">${esc(c.n)}</div></div><div class="tap">нажми, чтобы продолжить ▸</div>`
+  :`<div class="radio"><div class="rdh"><span class="ri">📻</span><div><b>РАДИО · КАЗАНЬ</b><div class="freq"><i></i></div></div></div><div class="wave">${'<i></i>'.repeat(24)}</div><div class="rt"></div></div><div class="tap">нажми, чтобы продолжить ▸</div>`;
+ document.body.appendChild(d);CUT={el:d,t0:Date.now()};sfx(c.k==='paper'?'paper':'radio');
+ if(c.k==='radio'){const R=d.querySelector('.rt');let i=0;CUT.iv=setInterval(()=>{i+=2;R.textContent=c.t.slice(0,i);if(i>=c.t.length){clearInterval(CUT.iv);d.querySelector('.wave').classList.add('off')}},38);CUT.full=()=>{clearInterval(CUT.iv);R.textContent=c.t;d.querySelector('.wave').classList.add('off')};CUT.txt=c.t}
+ d.onclick=closeCut}
+function closeCut(){if(!CUT||Date.now()-CUT.t0<350)return;const R=CUT.el.querySelector('.rt');if(R&&CUT.txt&&R.textContent.length<CUT.txt.length){CUT.full();return}
+ clearInterval(CUT.iv);CUT.el.remove();CUT=null;render()}
+addEventListener('keydown',e=>{if(!CUT)return;if(['Space','Enter','KeyE','Escape'].includes(e.code)){e.preventDefault();closeCut()}e.stopImmediatePropagation();e.stopPropagation()},true);
+const _render=render;render=function(){_render.apply(this,arguments);setTimeout(maybeCut,30)};
+
+// ---------- магазин: фильтры эпохи ----------
+SHOP.push({id:'filters',ic:'📼',t:'Фильтры эпохи',d:'Два режима картинки: «VHS» — полосы, запись и цвета видеосалона 80-х, и «Плёнка» — сепия, зерно и виньетка, как в старом кино. Включаются в настройках. Навсегда.',rub:79,uah:40,perm:1,open:'settings()'});
+function applyFlt(){const f=owns('filters')?(SET.flt||''):'';document.body.dataset.flt=f;let o=$('fltov');if(!o){o=document.createElement('div');o.id='fltov';o.innerHTML='<div class="vh1">▶ PLAY</div><div class="vh2">SP</div><div class="band"></div>';document.body.appendChild(o)}
+ if(f==='film'&&!o.dataset.g){const c=document.createElement('canvas');c.width=c.height=128;const g=c.getContext('2d'),im=g.createImageData(128,128);for(let i=0;i<im.data.length;i+=4){const v=Math.random()*255|0;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=26}g.putImageData(im,0,0);o.style.setProperty('--grain','url('+c.toDataURL()+')');o.dataset.g=1}}
+setInterval(()=>{const o=$('fltov');if(o&&document.body.dataset.flt==='vhs'){const t=Math.floor(performance.now()/1000);o.querySelector('.vh2').textContent='SP  '+[t/3600|0,(t/60|0)%60,t%60].map(x=>String(x).padStart(2,'0')).join(':')}},1000);
+const _walletLoad=typeof walletLoad==='function'?walletLoad:null;if(_walletLoad)walletLoad=async function(){const r=await _walletLoad.apply(this,arguments);applyFlt();return r};
+applyFlt();
+
+// ---------- стили ----------
+(function(){const st=document.createElement('style');st.textContent=`
+.hs.rk{background:rgba(40,30,10,.78);border-color:#b08a2e;color:#f1d27a}
+.endx{margin-top:8px;font:13px/1.4 "Courier New",monospace;color:#e9dfc8;opacity:.9}
+.trk{position:relative;height:64px;margin:14px 0 8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:8px;overflow:hidden}
+.trk.wh{background:rgba(255,60,60,.12)}.trk .hl{position:absolute;left:18%;top:0;bottom:0;width:4px;margin-left:-2px;background:#e0434b;box-shadow:0 0 12px #e0434b}
+.trk .nt{position:absolute;top:50%;font-size:34px;transform:translate(-50%,-50%);transition:opacity .15s}.trk .nt.ok{opacity:0!important;transform:translate(-50%,-50%) scale(1.8);transition:.25s}.trk .nt.no{filter:grayscale(1);opacity:.25!important}
+.mg .kb{display:flex;gap:10px;justify-content:center}.mg .kb .btn{flex:1;max-width:180px}
+.yd{display:flex;gap:10px;justify-content:center;margin:14px 0 10px}.yb{position:relative;flex:1;max-width:130px;padding:14px 6px 10px;border-radius:10px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#f3efe6;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit}
+.yb .yi{font-size:34px}.yb .yn{font-size:13px;opacity:.8}.yb .yx{position:absolute;top:-12px;right:-6px;font-size:26px}.yb.dg{border-color:#e0434b;background:rgba(224,67,75,.18)}.yb.ok{border-color:#4caf50;background:rgba(76,175,80,.25)}.yb.no{border-color:#e0434b;background:rgba(224,67,75,.35)}
+.coins{display:flex;justify-content:center;gap:8px;font-size:38px;margin:12px 0}.coins span{transition:transform .25s}.coins span.fl{animation:cflip .35s}
+@keyframes cflip{0%{transform:rotateX(0) translateY(0)}50%{transform:rotateX(180deg) translateY(-18px)}100%{transform:rotateX(360deg) translateY(0)}}
+.bar.pw .zone{background:rgba(76,175,80,.55)}
+.achbar{height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin:6px 0 10px}.achbar i{display:block;height:100%;background:linear-gradient(90deg,#b08a2e,#f1d27a)}
+.achl{list-style:none;padding:0;margin:0;display:grid;gap:6px}.achl li{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.05)}.achl li span{font-size:22px}.achl li b{display:block}.achl li small{opacity:.75}.achl li.no{opacity:.45}
+.cut{position:fixed;inset:0;z-index:60;background:rgba(6,5,4,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;animation:cutin .5s ease;cursor:pointer}
+@keyframes cutin{from{opacity:0}to{opacity:1}}
+.paper{width:min(540px,90vw);background:#e8dfc6;background-image:radial-gradient(rgba(120,95,50,.12) 1px,transparent 1px);background-size:5px 5px;color:#1c1912;padding:20px 24px 18px;transform:rotate(-1.4deg);box-shadow:0 20px 60px rgba(0,0,0,.6);animation:pin .7s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pin{from{transform:rotate(-8deg) scale(1.4);opacity:0}to{transform:rotate(-1.4deg) scale(1);opacity:1}}
+.paper .mh{font:900 clamp(26px,6vw,38px)/1 Georgia,"Times New Roman",serif;text-align:center;letter-spacing:3px;border-bottom:4px double #1c1912;padding-bottom:8px}
+.paper .pd{display:flex;justify-content:space-between;font:11px "Courier New",monospace;border-bottom:1px solid #1c1912;padding:4px 0;margin-bottom:12px;text-transform:uppercase}
+.paper h2{font:900 clamp(20px,4.6vw,28px)/1.08 Georgia,serif;text-transform:uppercase;margin:0 0 10px}
+.paper p{font:15px/1.45 Georgia,serif;margin:0 0 12px;text-align:justify;hyphens:auto}.paper .nb{border-top:1px solid #1c1912;padding-top:8px;font:13px/1.4 Georgia,serif;font-style:italic}
+.radio{width:min(540px,90vw);color:#f3efe6;background:#15120e;border:1px solid #3a3226;border-radius:12px;padding:18px 20px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.rdh{display:flex;gap:14px;align-items:center}.ri{font-size:44px}.rdh b{font:bold 15px "Courier New",monospace;letter-spacing:3px;color:#ffd23f}
+.freq{position:relative;width:220px;max-width:50vw;height:14px;margin-top:6px;background:repeating-linear-gradient(90deg,#6a5a40 0 1px,transparent 1px 10px);border-bottom:1px solid #6a5a40}.freq i{position:absolute;top:-2px;bottom:-2px;width:2px;background:#e0434b;left:10%;animation:tune 1.2s ease-out forwards}
+@keyframes tune{0%{left:8%}60%{left:66%}80%{left:58%}100%{left:62%}}
+.wave{display:flex;gap:3px;align-items:center;height:42px;margin:16px 0 12px}.wave i{flex:1;background:#ffd23f;opacity:.75;border-radius:2px;height:20%;animation:wv .5s ease-in-out infinite alternate}
+.wave i:nth-child(3n){animation-delay:-.2s}.wave i:nth-child(4n+1){animation-delay:-.35s}.wave i:nth-child(5n+2){animation-delay:-.1s}.wave.off i{animation:none;height:6%;opacity:.3}
+@keyframes wv{from{height:12%}to{height:95%}}
+.rt{font:16px/1.55 "Courier New",monospace;min-height:7.5em;white-space:pre-wrap}
+.cut .tap{margin-top:18px;color:#bdb5a5;font:13px "Courier New",monospace;animation:blk 1.4s infinite}@keyframes blk{50%{opacity:.35}}
+#fltov{position:fixed;inset:0;pointer-events:none;z-index:4;display:none}
+body[data-flt=vhs] #scr{filter:saturate(1.45) contrast(1.1) hue-rotate(-8deg) blur(.35px)}
+body[data-flt=vhs] #fltov{display:block;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px)}
+#fltov .vh1,#fltov .vh2{display:none;position:absolute;font:bold 20px "Courier New",monospace;color:#fff;text-shadow:2px 0 #e0434b,-2px 0 #2bd9ff;letter-spacing:2px}
+body[data-flt=vhs] #fltov .vh1{display:block;right:18px;bottom:22%}body[data-flt=vhs] #fltov .vh2{display:block;left:18px;bottom:22%}
+#fltov .band{display:none;position:absolute;left:0;right:0;height:9%;background:linear-gradient(transparent,rgba(255,255,255,.07),transparent);animation:band 7s linear infinite}
+body[data-flt=vhs] #fltov .band{display:block}@keyframes band{from{top:-10%}to{top:110%}}
+body[data-flt=film] #scr{filter:sepia(.6) contrast(1.08) brightness(.96)}
+body[data-flt=film] #fltov{display:block;background:var(--grain),radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%);animation:grain .25s steps(3) infinite}
+@keyframes grain{0%{background-position:0 0,0 0}33%{background-position:-40px 20px,0 0}66%{background-position:30px -50px,0 0}100%{background-position:0 0,0 0}}
+`;document.head.appendChild(st)})();
 </script></body></html>
