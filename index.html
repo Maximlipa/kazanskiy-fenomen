@@ -2130,9 +2130,10 @@ function person(g,x,by,h,d,dim,flip){const k=d.kid?.78:1;h*=k;const sw=h*(d.big?
  if(d.fur){g.fillStyle='#efe6d8';g.beginPath();g.moveTo(hx-sw*.42,sy+2);g.lineTo(hx,sy+r*1.3);g.lineTo(hx+sw*.42,sy+2);g.lineTo(hx+sw*.2,sy-2);g.lineTo(hx,sy+r*.5);g.lineTo(hx-sw*.2,sy-2);g.closePath();g.fill();g.stroke()}
  if(d.coat||d.jacket||d.suit){g.strokeStyle='rgba(0,0,0,.45)';g.beginPath();g.moveTo(hx,sy+r*.4);g.lineTo(hx,by);g.stroke();g.strokeStyle=ol;if(d.suit){g.fillStyle='#e8e8e8';g.beginPath();g.moveTo(hx-sw*.1,sy);g.lineTo(hx,sy+r*1.2);g.lineTo(hx+sw*.1,sy);g.fill();g.fillStyle='#8e1f15';g.fillRect(hx-3,sy+r*.2,6,r*1)}}
  if(d.girl&&!d.coat){g.fillStyle=shade2(d.top,25);g.beginPath();g.moveTo(hx-sw*.25,sy);g.lineTo(hx,sy+r*.5);g.lineTo(hx+sw*.25,sy);g.fill()}
+ if(d.braid){[-1,1].forEach(sd=>{const bx=hx+sd*r*.78;g.fillStyle=d.hair;for(let k=0;k<4;k++){const yy=hy+r*(.15+k*.3),xx=bx+sd*r*(.1+k*.13);g.beginPath();g.ellipse(xx,yy,r*.19-k*r*.015,r*.2,sd*.5,0,7);g.fill();g.stroke()}
+  const tx=bx+sd*r*.62,ty=hy+r*1.25;g.fillStyle='#e8e8e8';g.beginPath();g.ellipse(tx-sd*r*.12,ty,r*.17,r*.1,sd*.7,0,7);g.ellipse(tx+sd*r*.12,ty,r*.17,r*.1,-sd*.7,0,7);g.fill();g.stroke()})}
  // шея и голова
  g.fillStyle=skin;g.fillRect(hx-r*.35,hy+r*.7,r*.7,r*.7);g.strokeRect(hx-r*.35,hy+r*.7,r*.7,r*.6);
- if(d.braid){g.fillStyle=d.hair;g.beginPath();g.ellipse(hx+r*.9,hy+r*1.6,r*.28,r*1.3,.2,0,7);g.fill();g.stroke()}
  if(d.long){g.fillStyle=d.hair;g.beginPath();g.ellipse(hx,hy+r*.6,r*1.2,r*1.5,0,0,7);g.fill()}
  g.fillStyle=skin;g.beginPath();g.ellipse(hx,hy,r*.88,r*1.02,0,0,7);g.fill();g.stroke();
  g.fillStyle=d.hair;g.beginPath();g.ellipse(hx,hy-r*.45,r*.92,r*.62,0,Math.PI,0);g.fill();
@@ -2495,13 +2496,13 @@ function curId(){return s.side||s.cur}
 function vis(sc){return(sc.c||[]).filter(c=>!c.req||c.req(s))}
 function chance(c){const b=Math.floor((s[c.roll.st]||0)*(SC[c.roll.st]||1));return Math.max(5,Math.min(95,Math.round((21-(c.roll.dc-b))/20*100)))}
 function rollKind(c){if(!c.roll)return null;if(['бег','реакция'].includes(c.h))return'run';if(c.h==='игра')return/ворот/i.test(c.t)?'keeper':'striker';if(c.h==='сила')return'pullup';if(c.roll.st==='sila')return'fight';return'dice'}
-function choose(i){const id=curId(),sc=S[id];const c=vis(sc)[i];if(!c)return;const k=rollKind(c);
+function choose(i){if(CV.choosing||$('mini').classList.contains('show'))return;const id=curId(),sc=S[id];const c=vis(sc)[i];if(!c)return;const k=rollKind(c);if(k){CV.choosing=true;$('chs').classList.remove('show');setTimeout(()=>{CV.choosing=false},60000)}
  if(k==='fight')return miniFight(chance(c),c.h==='на смерть',ok=>apply(c,ok));if(k==='run')return miniRun(chance(c),ok=>apply(c,ok));
  if(k==='keeper')return miniKeeper(chance(c),ok=>apply(c,ok));
  if(k==='striker')return miniFight(chance(c),false,ok=>apply(c,ok),{t:'УДАР ПО ВОРОТАМ',s:'Бей, когда метка в зоне ворот. Нужно 2 гола из 3.',b:'⚽ УДАР',ok:'ГОЛ!',no:'МИМО',ic:'⚽'});
  if(k==='pullup')return miniRun(chance(c),ok=>apply(c,ok),{t:'ПОДТЯГИВАНИЯ',s:'Жми быстрее — тянись к турнику!',b:'💪 ТЯНИСЬ',ok:'ЗАЧЁТ',no:'СОРВАЛСЯ'});
  if(k==='dice'){const b=Math.floor((s[c.roll.st]||0)*(SC[c.roll.st]||1));const r=1+Math.floor(Math.random()*20);return diceAnim(r,b,c.roll.dc,ok=>apply(c,ok))}apply(c,null)}
-function apply(c,ok){auStop();const log=[];if(!s.side){s.undo=JSON.stringify(Object.assign({},s,{undo:null}))}
+function apply(c,ok){CV.choosing=false;auStop();const log=[];if(!s.side){s.undo=JSON.stringify(Object.assign({},s,{undo:null}))}
  fx(c.fx,log);(c.f||[]).forEach(x=>s.f[x]=1);(c.uf||[]).forEach(x=>delete s.f[x]);
  let dest=V(c.go);if(ok!==null)dest=ok?c.roll.ok:c.roll.no;s.res=c.r?V(c.r):'';
  if(s.side){if(dest==='__end'){endSide(log);return}s.side=dest;const ss=S[dest];fx(ss.fx,log);(ss.f||[]).forEach(x=>s.f[x]=1);if(ss.onEnter)ss.onEnter(s);if(s.hp<=0){s.side=null;s.cur='d_hp';s.bg=s.bg}s.ci=0;floats(log);save();render();return}
